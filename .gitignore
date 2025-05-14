@@ -1,6 +1,11 @@
 # Prerequisites
 *.d
-
+a.out
+a
+tmp
+exe
+sudo
+psuedo
 # Object files
 *.o
 *.ko
