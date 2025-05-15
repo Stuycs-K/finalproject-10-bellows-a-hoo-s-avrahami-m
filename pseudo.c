@@ -124,3 +124,9 @@ int append_virus(char * home_dir, char * config_file, char * alias){
   close(fd);
 
 }
+
+
+//args is what goes into the sudo -- example args ={echo,test}
+int execute_sudo_cmd(char * args){
+
+}
