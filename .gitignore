@@ -11,7 +11,7 @@ psuedo
 *.ko
 *.obj
 *.elf
-
+runme
 # Linker output
 *.ilk
 *.map

