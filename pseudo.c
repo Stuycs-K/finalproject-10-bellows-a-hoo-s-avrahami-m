@@ -21,6 +21,7 @@ int main(int argc, char ** argv){
   signal(SIGQUIT, sighandler);
   signal(SIGINT, sighandler);
   signal(SIGSTOP, sighandler);
+  signal(SIGTSTP, sighandler);
   //set mode
   int mode = P_IMPLANT;
   for (int i = 0; i<argc; i++){
