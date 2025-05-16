@@ -9,3 +9,5 @@ I created a c program that mimicks `sudo` to steal passwords and also implants i
 
 ### 2025-05-15 - research and project reformulation
 Stanley and I ideated regarding how to adapt tp the project feedback we recieved.
+### 2025-05-16 - sudo works
+Michael and I worked on testing our sudo dup 2ing
