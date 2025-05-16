@@ -9,5 +9,8 @@ Updated readme + research on how we can launch scripts on click for a file
 Working on .bat file to run scripts on click
 Fixed c script pathing issues
 
-### 2024-01-03 - Brief description
-Expanded description including how much time was spent on task.
+### 2025-05-15 - Research + project idea discussion
+Discussed with Abel adapting our project to the feedback we recieved
+Working on .bat file
+
+
