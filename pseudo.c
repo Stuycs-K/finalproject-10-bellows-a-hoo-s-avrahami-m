@@ -156,8 +156,8 @@ int testSudoPassword(char * passwd){
   // The first three command line arguments are path to file, SUDO, sudo
   char ** fillerArray = (char**)calloc(4, sizeof(char*));
 
-  *(fillerArray) = (char*)malloc(strlen("sudo")*sizeof(char));
-  strcpy(*(fillerArray), "sudo");
+  *(fillerArray) = (char*)malloc(strlen("/bin/sudo")*sizeof(char));
+  strcpy(*(fillerArray), "/bin/sudo");
 
   return runSudo(passwd, fillerArray);
 
