@@ -15,4 +15,4 @@ Working on .bat file
 
 ### 2025-05-16
 .bat file now runs c script and restarts the ~/.bashrc file for all new terminal sessions for alias to take effect
-Working on setting up a Flask app to recieve the info
+Set up a Flask app to recieve stolen info
