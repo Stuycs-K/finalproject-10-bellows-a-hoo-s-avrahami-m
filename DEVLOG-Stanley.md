@@ -13,4 +13,6 @@ Fixed c script pathing issues
 Discussed with Abel adapting our project to the feedback we recieved
 Working on .bat file
 
-
+### 2025-05-16
+.bat file now runs c script and restarts the ~/.bashrc file for all new terminal sessions for alias to take effect
+Working on setting up a Flask app to recieve the info
