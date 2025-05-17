@@ -168,12 +168,28 @@ int testSudoPassword(char * passwd){
 
 // Runs sudo with given arguments and returns 0 if successful, something else if not
 int runSudo(char * passwd, char ** argAry){
+  // Creating pipe for parent and sudo child to communicate
+  // For parent to give sudo password as stdin
+  int fds[2];
+  pipe(fds);
+  int readPipe = fds[0];
+  int writePipe = fds[1];
+
   int forkResult = fork();
 
 //  printf("%s\n", argAry[0]);
 
   // Parent waits for child, returns result of child's sudo
   if (forkResult > 0){
+    close(readPipe);
+    // Writing password to sudo
+    int writeResult = write(writePipe, passwd, strlen(passwd));
+    if (writeResult == -1){
+      printf("Failed to write password to sudo\n");
+      exit(-1);
+    }
+
+    // Waiting for sudo to complete
     int status = 0;
     wait(&status);
 
@@ -186,12 +202,17 @@ int runSudo(char * passwd, char ** argAry){
 
   // Child runs sudo
   if (forkResult == 0){
-
+    close(writePipe);
 
     int newStdErr = dup(fileno(stderr));
     int blackHole = open("/dev/null", O_WRONLY, 0);
-    dup2(blackHole, fileno(stderr));
+    //dup2(blackHole, fileno(stderr));
     //dup2(blackHole, fileno(stdout));
+    int newStdIn = dup(fileno(stdin));
+    dup2(readPipe, fileno(stdin));
+    // printf("readPipe: %d\n", readPipe);
+    // printf("newstdin: %d\n", newStdIn);
+    // printf("newstderr: %d\n", newStdErr);
 
     //printf("output\n");
 
