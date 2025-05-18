@@ -19,3 +19,4 @@ Set up a Flask app to recieve stolen info
 
 ### 2025-05-18
 Flask server now can display data in a table to view
+Wrote functions to send stolen data for display on the flask server
