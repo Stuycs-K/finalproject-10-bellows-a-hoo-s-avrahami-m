@@ -7,7 +7,7 @@ implant: runme
 	@./runme
 
 sudo: runme
-	@./runme SUDO $(ARGS)
+	@./runme SUDO BLANK $(ARGS)
 
 clean:
 	@rm -rf *.o runme

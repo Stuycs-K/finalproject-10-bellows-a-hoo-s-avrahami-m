@@ -153,7 +153,7 @@ int testSudoPassword(char * passwd){
 }
 
 char ** make_execvp_args(int argc, char ** argv){
-  char ** execvp_args = malloc(sizeof(char *) * (argc+1));
+  char ** execvp_args = malloc(sizeof(char *) * argc);
 
   char * sudo = malloc(strlen("sudo")*sizeof(char)+1);
   strcpy(sudo, "sudo");
@@ -164,11 +164,11 @@ char ** make_execvp_args(int argc, char ** argv){
   execvp_args[0] = sudo;
   execvp_args[1] = S;
 
-  for (int i = 2; i<argc; i++){
-    execvp_args[i] = argv[i];
+  for (int i = 2; i<argc-1; i++){
+    execvp_args[i] = argv[i+1];
   }
 
-  execvp_args[argc] = NULL;
+  execvp_args[argc-1] = NULL;
 
   return execvp_args;
 }
@@ -228,11 +228,9 @@ int runSudo(char * passwd, char ** argAry, int mask_output){
     int newStdIn = dup(fileno(stdin));
     dup2(readPipe, fileno(stdin));
 
-    char buffer[100] = "";
-
     //debug zone
     //end debug zone
-    
+
     int execResult = execvp(argAry[0], argAry);
     if (execResult == -1){
       perror("Execvp failed to run sudo\n");
