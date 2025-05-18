@@ -66,7 +66,6 @@ def home():
     for target in data:
         username, password, ip, timestamp = target['username'], target['password'], target['ip'], target['timestamp']
         row = table_row.replace("USERNAME", username).replace("PASSWORD", password).replace("IP", ip).replace("DATE", timestamp)
-        print(row)
         table_body += row
     table = table.replace("TBODY", table_body)
     return table
