@@ -48,19 +48,22 @@ def get_data():
 def home():
     data = get_data()
     table = '''
-    <table border="1">
-        <thead>
-            <tr>
-            <th>Username</th>
-            <th>Password</th>
-            <th>IP</th>
-            <th>Date Retrieved</th>
-            </tr>
-        </thead>
-        <tbody>
-            TBODY
-        </tbody>
-    </table>
+        <div class="container mt-5 text-center">
+            <h2 class="mb-4">Stolen Credentials</h2>
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>IP</th>
+                        <th>Date Retrieved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    TBODY
+                </tbody>
+            </table>
+        </div>
     '''
     table_row = '''
     <tr>
