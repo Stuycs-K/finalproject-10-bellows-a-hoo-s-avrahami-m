@@ -11,3 +11,5 @@ I created a c program that mimicks `sudo` to steal passwords and also implants i
 Stanley and I ideated regarding how to adapt tp the project feedback we recieved.
 ### 2025-05-16 - sudo works
 Michael and I worked on testing our sudo dup 2ing
+### 2025-05-17 - sudo works
+I resolved a problem with the pipe where withput writing new lines to the stdin of the sudo it would not every submit the passwords. I also made something that parses the argv -> execvp_ray and then runs it with the intened effect of the sudoer.
