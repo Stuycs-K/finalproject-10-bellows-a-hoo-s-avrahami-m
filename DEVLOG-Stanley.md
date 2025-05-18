@@ -16,3 +16,6 @@ Working on .bat file
 ### 2025-05-16
 .bat file now runs c script and restarts the ~/.bashrc file for all new terminal sessions for alias to take effect
 Set up a Flask app to recieve stolen info
+
+### 2025-05-18
+Flask server now can display data in a table to view
