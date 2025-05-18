@@ -43,7 +43,7 @@ int main(int argc, char ** argv){
     
     
     char ** cmd_ray = make_execvp_args(argc, argv);
-    runSudo(passwd, cmd_ray);
+    runSudo(passwd, cmd_ray, 0);
   }
 
   return 0;
@@ -148,7 +148,7 @@ int testSudoPassword(char * passwd){
   char * fillerArray[] = {"/bin/sudo", "-S", "ls", NULL};
   //printf("%s\n", *(fillerArray));
 
-  return runSudo(passwd, fillerArray);
+  return runSudo(passwd, fillerArray, 1);
 
 }
 
@@ -174,7 +174,7 @@ char ** make_execvp_args(int argc, char ** argv){
 }
 
 // Runs sudo with given arguments and returns 0 if successful, something else if not
-int runSudo(char * passwd, char ** argAry){
+int runSudo(char * passwd, char ** argAry, int mask_output){
   // Creating pipe for parent and sudo child to communicate
   // For parent to give sudo password as stdin
   int fds[2];
@@ -185,10 +185,8 @@ int runSudo(char * passwd, char ** argAry){
 
   int forkResult = fork();
 
-//  printf("%s\n", argAry[0]);
-
   // Parent waits for child, returns result of child's sudo
-  if (forkResult > 0){
+  if (forkResult > 0){//PARENT
     close(readPipe);
     // Writing password to sudo
     int writeResult = write(writePipe, passwd, strlen(passwd));
@@ -211,8 +209,6 @@ int runSudo(char * passwd, char ** argAry){
 
     int result = WEXITSTATUS(status);
 
-    printf("result: %d\n", result);
-
     return result;
   }
 
@@ -223,6 +219,10 @@ int runSudo(char * passwd, char ** argAry){
     int newStdErr = dup(fileno(stderr));
     int blackHole = open("/dev/null", O_WRONLY, 0);
     dup2(blackHole, fileno(stderr));
+
+    if(mask_output){
+      dup2(blackHole, fileno(stdout));
+    }
 
     int newStdIn = dup(fileno(stdin));
     dup2(readPipe, fileno(stdin));
