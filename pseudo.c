@@ -221,20 +221,18 @@ int runSudo(char * passwd, char ** argAry, int mask_output){
     dup2(blackHole, fileno(stderr));
 
     if(mask_output){
+      //if we are masking the output of sudo then we put stdout to blackhole
       dup2(blackHole, fileno(stdout));
     }
 
     int newStdIn = dup(fileno(stdin));
     dup2(readPipe, fileno(stdin));
-    // printf("readPipe: %d\n", readPipe);
-    // printf("newstdin: %d\n", newStdIn);
-    // printf("newstderr: %d\n", newStdErr);
-
-    //printf("output\n");
 
     char buffer[100] = "";
-    printf("child waiting...");
-    printf("Running sudo %s\n", buffer);
+
+    //debug zone
+    //end debug zone
+    
     int execResult = execvp(argAry[0], argAry);
     if (execResult == -1){
       perror("Execvp failed to run sudo\n");
