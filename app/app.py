@@ -32,9 +32,9 @@ html = '''<head>
   margin-bottom: 10px;
   border-radius: 5px;
   color: #721c24;
-  opacity: 1; 
-  transition: opacity 0.5s ease; 
-  animation: fadeOut 2s forwards; 
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  animation: fadeOut 2s forwards;
 }
 
 /*.flash-message {
@@ -103,9 +103,9 @@ def create_db():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS data (
-        username TEXT NOT NULL, 
-        password TEXT NOT NULL, 
-        ip TEXT NOT NULL, 
+        username TEXT NOT NULL,
+        password TEXT NOT NULL,
+        ip TEXT NOT NULL,
         timestamp TEXT
         );
     ''')
@@ -117,14 +117,14 @@ def create_db():
     ''')
     conn.commit()
     conn.close()
-    
+
 def insert_data(username, password, ip, timestamp):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("INSERT INTO data(username, password, ip, timestamp) VALUES(?, ?, ?, ?)", (username, password, ip, timestamp))
     conn.commit()
     conn.close()
-    
+
 def get_data():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -211,7 +211,7 @@ def login():
         else:
             flash('Invalid username or password!', 'error')
             return redirect(url_for('home'))
-            
+
 @app.route('/register', methods=['POST'])
 def register():
     username = request.form.get('username')
@@ -231,7 +231,7 @@ def register():
         return 'User registered successfully.'
     except sqlite3.IntegrityError:
         return 'Username already exists.'
-    
+
 if __name__ == "__main__":
     create_db()
     print(f"[DEBUG] Registration key: {REGISTRATION_KEY}")
