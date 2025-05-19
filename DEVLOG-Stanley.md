@@ -21,3 +21,6 @@ Set up a Flask app to recieve stolen info
 Flask server now can display data in a table to view
 Wrote functions to send stolen data for display on the flask server
 Wrote function to send back commands for the virus
+
+### 2025-05-19
+Created credentials to view stolen data (username: admin, password: pseudoadmin)
