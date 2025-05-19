@@ -18,3 +18,5 @@ I resolved a problem with the pipe where without writing new lines to the stdin 
 
 ### 2025-05-18
 Better faking of sudo, reverse shell functionalist, privalege escalation of virus after passwd is stolen
+### 2025-05-19
+used systems code from old project to create server that will field reverse shell requests.
