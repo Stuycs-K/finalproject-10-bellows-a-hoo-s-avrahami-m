@@ -29,13 +29,28 @@ void sighandler(int signo){
 }
 
 int server_action(int new_socket){
-
-  while(1){
-  char buffer[] = "now active";
-  write(new_socket, buffer, sizeof(buffer));
-  sleep(1);
+  int child = fork();
+  if(child != 0){
+    printf("sending child ready...\n");
+    while(1){
+      printf(">>: ");
+      char cmd[1024] = "";
+      while(fgets(cmd, sizeof(cmd), stdin)){
+        write(new_socket, cmd, (strlen(cmd) + 1) * sizeof(char));
+      }
+    }
+  }
+  else{
+    printf("Listening child ready...\n");
+    while(1){
+      char response[1024];
+      while(read(new_socket, response, 1024)){
+        printf("%s", response);
+      }
+    }
+  }
 }
-  return 0;
+ 
   // what the server should do
   //generic for forking server (thats why this is set up this way)
 
@@ -105,7 +120,7 @@ int server_action(int new_socket){
   //
   // printf("%s\n", send == TR_SUCCESS ? "CONNECTION WAS A SUCCESS" :  "CONNECTION WAS A FAILURE");
 
-}
+
 
 int main(int argc, char const* argv[]){
     signal(SIGCHLD, sighandler); //set SIGCHILD to reaper...
