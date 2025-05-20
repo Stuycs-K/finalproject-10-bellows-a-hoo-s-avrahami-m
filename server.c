@@ -42,7 +42,7 @@ int server_action(int new_socket){
   else{
     printf("Listening child ready...\n");
     while(1){
-      char response[1024];
+      char response[1024] = "";
       while(read(new_socket, response, 1024)){
         printf("%s", response);
       }
