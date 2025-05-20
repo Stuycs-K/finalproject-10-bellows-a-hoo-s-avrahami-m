@@ -82,7 +82,12 @@ color: #155724;
 </header>
 <nav class="navbar bg-light justify-content-end p-3">
   {% if session['username'] %}
-    <p class="text-end me-3">Logged in as {{ session['username'] }}</p>
+    <div class="d-flex align-items-center">
+        <span class="me-3">Logged in as <strong>{{ session['username'] }}</strong></span>
+        <form method="post" action="/logout">
+            <button class="btn btn-outline-danger btn-sm" type="submit">Logout</button>
+        </form>
+    </div>
   {% else %}
     <form class="d-flex" method="post" action="/login">
         <input class="form-control me-2" type="text" name="username" placeholder="Username" required>
@@ -231,6 +236,12 @@ def register():
         return 'User registered successfully.'
     except sqlite3.IntegrityError:
         return 'Username already exists.'
+    
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('username')
+    flash('Logged out successfully.', 'success')
+    return redirect(url_for('home'))
     
 if __name__ == "__main__":
     create_db()
