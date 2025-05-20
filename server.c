@@ -14,9 +14,14 @@
 
 //reap children
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "utils.h"
 #include "networking.h"
+#include "control_server.h"
+#include "user_console.h"
+
 void sighandler(int signo){
   switch(signo){
     case SIGCHLD:
@@ -29,37 +34,21 @@ void sighandler(int signo){
 }
 
 int server_action(int new_socket){
-  int child = fork();
-  if(child != 0){
-    printf("sending child ready...\n");
-    while(1){
-      printf(">>: ");
-      char cmd[1024] = "";
-      fgets(cmd, sizeof(cmd), stdin);
-      write(new_socket, cmd, (strlen(cmd)+1) * sizeof(char));
-      printf("\n");
-    }
-  }
-  else{
-    printf("Listening child ready...\n");
-    while(1){
-      char response[1024] = "";
-      int bytes;
-      while(bytes = read(new_socket, response, 1024)){
-        printf("\n<<RESPONSE>> : %s\n", response);
-        memset(response, 0, sizeof(response));
-      }
-      printf(">>: ");
-    }
-  }
+  listening_server_action(new_socket);
 }
- 
 
 int main(int argc, char const* argv[]){
     signal(SIGCHLD, sighandler); //set SIGCHILD to reaper...
 
+    int chldid = fork();
+    if(chldid==0){
+      user_console();
+    }
+
     //set up server listening ...
     int server_fd = setup_server();
+
+
 
     //server loop
     while(1){
