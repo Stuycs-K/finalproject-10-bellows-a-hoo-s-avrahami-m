@@ -46,9 +46,10 @@ int server_action(int new_socket){
       char response[1024] = "";
       int bytes;
       while(bytes = read(new_socket, response, 1024)){
-        printf("\n<<: %s\n", response);
+        printf("\n<<RESPONSE>> : %s\n", response);
         memset(response, 0, sizeof(response));
       }
+      printf(">>: ");
     }
   }
 }
