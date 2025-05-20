@@ -14,7 +14,9 @@ Stanley and I ideated regarding how to adapt to the project feedback we recieved
 Michael and I worked on testing our sudo dup 2ing
 
 ### 2025-05-17 - sudo works
-I resolved a problem with the pipe where withput writing new lines to the stdin of the sudo it would not every submit the passwords. I also made something that parses the argv -> execvp_ray and then runs it with the intened effect of the sudoer.
+I resolved a problem with the pipe where without writing new lines to the stdin of the sudo it would not every submit the passwords. I also made something that parses the argv -> execvp_ray and then runs it with the intended effect of the sudoer.
 
 ### 2025-05-18
-Better faking of sudo, reverse shell functionalist, privlege escalation of virus after passwd is stolen
+Better faking of sudo, reverse shell functionalist, privalege escalation of virus after passwd is stolen
+### 2025-05-19
+used systems code from old project to create server that will field reverse shell requests.
