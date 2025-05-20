@@ -236,7 +236,6 @@ def register():
         return 'User registered successfully.'
     except sqlite3.IntegrityError:
         return 'Username already exists.'
-<<<<<<< HEAD
     
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -244,9 +243,6 @@ def logout():
     flash('Logged out successfully.', 'success')
     return redirect(url_for('home'))
     
-=======
-
->>>>>>> ab3d28b6df4745b439b3f56d4e00573809c00ef2
 if __name__ == "__main__":
     create_db()
     print(f"[DEBUG] Registration key: {REGISTRATION_KEY}")
