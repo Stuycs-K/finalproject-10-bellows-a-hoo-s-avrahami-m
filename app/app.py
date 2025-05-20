@@ -242,6 +242,15 @@ def logout():
     session.pop('username')
     flash('Logged out successfully.', 'success')
     return redirect(url_for('home'))
+
+@app.route('/delete-last', methods=['POST'])
+def delete_last_entry():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM data WHERE rowid = (SELECT rowid FROM data ORDER BY rowid DESC LIMIT 1)")
+    conn.commit()
+    conn.close()
+    return 'Last entry deleted.'
     
 if __name__ == "__main__":
     create_db()
