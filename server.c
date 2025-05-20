@@ -36,15 +36,17 @@ int server_action(int new_socket){
       printf(">>: ");
       char cmd[1024] = "";
       fgets(cmd, sizeof(cmd), stdin);
-      write(new_socket, cmd, (strlen(cmd) + 1) * sizeof(char));
+      write(new_socket, cmd, (strlen(cmd)+1) * sizeof(char));
     }
   }
   else{
     printf("Listening child ready...\n");
     while(1){
       char response[1024] = "";
-      while(read(new_socket, response, 1024)){
+      int bytes;
+      while(bytes = read(new_socket, response, 1024)){
         printf("<<%s", response);
+        memset(response, 0, sizeof(response));
       }
     }
   }
