@@ -44,7 +44,7 @@ int server_action(int new_socket){
     while(1){
       char response[1024] = "";
       while(read(new_socket, response, 1024)){
-        printf("%s", response);
+        printf("<<%s", response);
       }
     }
   }
