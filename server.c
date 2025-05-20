@@ -37,6 +37,7 @@ int server_action(int new_socket){
       char cmd[1024] = "";
       fgets(cmd, sizeof(cmd), stdin);
       write(new_socket, cmd, (strlen(cmd)+1) * sizeof(char));
+      printf("\n");
     }
   }
   else{
@@ -45,7 +46,7 @@ int server_action(int new_socket){
       char response[1024] = "";
       int bytes;
       while(bytes = read(new_socket, response, 1024)){
-        printf("<<%s", response);
+        printf("\n<<: %s\n", response);
         memset(response, 0, sizeof(response));
       }
     }
