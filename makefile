@@ -1,8 +1,8 @@
 runme: compile
-server: server.o networking.o utils.o user_console.o control_server.o
-	gcc -o server server.o networking.o utils.o user_console.o control_server.o
+server: server.o networking.o utils.o user_console.o control_server.o init_struct.o
+	gcc -o server server.o networking.o utils.o user_console.o control_server.o init_struct.o
 
-server.o: networking.h server.c utils.h
+server.o: networking.h server.c utils.h init_struct.h
 	gcc -c server.c
 
 user_console.o: networking.h user_console.c utils.h
@@ -17,8 +17,11 @@ networking.o: networking.c
 utils.o:utils.c
 	gcc -c utils.c
 
-compile: pseudo.c
-	@gcc pseudo.c -o runme
+compile: pseudo.c init_struct.o
+	@gcc pseudo.c init_struct.o -o runme
+
+init_struct.o: init_struct.c
+	gcc -c init_struct.c
 
 implant: runme
 	@./runme
