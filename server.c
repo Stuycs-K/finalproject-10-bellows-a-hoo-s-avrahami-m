@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 
 #include "utils.h"
+#include "server.h"
 #include "networking.h"
 #include "control_server.h"
 #include "user_console.h"
@@ -31,7 +32,7 @@ void sighandler(int signo){
       }
     case SIGUSR1:
       {
-
+        recv_user_cmd();
       }
     case SIGUSR2:
       {
@@ -59,6 +60,7 @@ int recv_user_cmd(){
 
 int main(int argc, char const* argv[]){
     signal(SIGCHLD, sighandler); //set SIGCHILD to reaper...
+    signal(SIGUSR1, sighandler);
 
     int user_fds[2];
     pipe(user_fds);
@@ -76,9 +78,9 @@ int main(int argc, char const* argv[]){
 
 
 
-    while(1){
-      recv_user_cmd();
-    }
+    // while(1){
+    //   recv_user_cmd();
+    // }
     //set up server listening ...
     int server_fd = setup_server();
 

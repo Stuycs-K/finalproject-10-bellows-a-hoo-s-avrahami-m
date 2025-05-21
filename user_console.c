@@ -21,6 +21,7 @@
 #include "utils.h"
 #include "networking.h"
 
+
 void get_input(char * cmd, int * shellid){
   char buffer[1024] = "";
   memset(buffer, 0, sizeof(buffer));
@@ -43,6 +44,8 @@ int user_console(int write_end){
     write(write_end, &shellid, sizeof(int));
     write(write_end, &len_msg, sizeof(int));
     write(write_end, cmd, len_msg);
+
+    kill(getppid(), SIGUSR1);
   }
   return 0;
 }

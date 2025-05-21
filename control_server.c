@@ -32,11 +32,11 @@ int listening_server_action(int new_socket){
     if(child != 0){
       printf("Wa...\n");
       while(1){
-        printf("%d >>: ", getpid());
-        char cmd[1024] = "";
-        fgets(cmd, sizeof(cmd), stdin);
-        write(new_socket, cmd, (strlen(cmd)+1) * sizeof(char));
-        printf("\n");
+        // printf("%d >>: ", getpid());
+        // char cmd[1024] = "";
+        // fgets(cmd, sizeof(cmd), stdin);
+        // write(new_socket, cmd, (strlen(cmd)+1) * sizeof(char));
+        // printf("\n");
       }
     }
     else{
