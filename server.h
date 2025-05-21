@@ -2,5 +2,4 @@
 #define SERVER_H
 void sighandler(int signo);
 int recv_user_cmd();
-int server_action(int new_socket);
 #endif
