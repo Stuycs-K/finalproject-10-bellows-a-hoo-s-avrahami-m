@@ -38,7 +38,7 @@ void sighandler(int signo){
       }
     case SIGUSR2:
       {
-        
+
       }
   }
 
@@ -55,6 +55,8 @@ int recv_user_cmd(){
   read(user_read, &msg_ln, sizeof(msg_ln));
   read(user_read, cmd, msg_ln);
 
+  write(childFds[shellid], cmd, msg_ln);
+  
   printf("RECV: %d, %s\n", shellid, cmd);
 }
 
@@ -66,7 +68,7 @@ int main(int argc, char const* argv[]){
     pipe(user_fds);
 
     int user_write = user_fds[1];
-    
+
     user_read = user_fds[0];
 
     int chldid = fork();
