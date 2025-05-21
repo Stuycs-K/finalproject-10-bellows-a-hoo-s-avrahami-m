@@ -45,14 +45,40 @@ int server_action(int new_socket){
   listening_server_action(new_socket);
 }
 
+static int user_read;
+int recv_user_cmd(){
+  int shellid;
+  int msg_ln;
+  char cmd[1024] = "";
+  read(user_read, &shellid, sizeof(shellid));
+  read(user_read, &msg_ln, sizeof(msg_ln));
+  read(user_read, cmd, msg_ln);
+
+  printf("RECV: %d, %s\n", shellid, cmd);
+}
+
 int main(int argc, char const* argv[]){
     signal(SIGCHLD, sighandler); //set SIGCHILD to reaper...
 
+    int user_fds[2];
+    pipe(user_fds);
+
+    int user_write = user_fds[1];
+    
+    user_read = user_fds[0];
+
     int chldid = fork();
     if(chldid==0){
-      user_console();
+      close(user_read);
+      user_console(user_write);
     }
+    close(user_write);
 
+
+
+    while(1){
+      recv_user_cmd();
+    }
     //set up server listening ...
     int server_fd = setup_server();
 

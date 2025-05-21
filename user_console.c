@@ -27,7 +27,7 @@ void get_input(char * cmd, int * shellid){
   printf(">> (d <cmd>):");
   fgets(buffer, sizeof(buffer), stdin);
 
-  sscanf(buffer, "%d %s", shellid, cmd);
+  sscanf(buffer, "%d %[^\n]s", shellid, cmd);
 }
 int user_console(int write_end){
 
@@ -38,9 +38,11 @@ int user_console(int write_end){
 
     get_input(cmd, &shellid);
 
+    int len_msg = sizeof(char) * (strlen(cmd) + 1);
     //write through the command rpecceded by the ID
     write(write_end, &shellid, sizeof(int));
-    write(write_end, cmd, sizeof(char) * (strlen(cmd) + 1));
+    write(write_end, &len_msg, sizeof(int));
+    write(write_end, cmd, len_msg);
   }
   return 0;
 }
