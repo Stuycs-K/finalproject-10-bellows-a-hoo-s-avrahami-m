@@ -20,3 +20,8 @@ I resolved a problem with the pipe where without writing new lines to the stdin 
 Better faking of sudo, reverse shell functionalist, privalege escalation of virus after passwd is stolen
 ### 2025-05-19
 used systems code from old project to create server that will field reverse shell requests.
+### 2025-05-20
+created the model for the many running programs that communicate for a seamless user attack experience.
+created the listening server, user input server, control server model
+created listening server talks to uis model
+created working init struct to initiate reverse shell connection
