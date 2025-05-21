@@ -23,6 +23,8 @@
 #include "control_server.h"
 #include "user_console.h"
 
+#define SIZE 100
+
 void sighandler(int signo){
   switch(signo){
     case SIGCHLD:
@@ -42,9 +44,7 @@ void sighandler(int signo){
 
 }
 
-int server_action(int new_socket){
-  listening_server_action(new_socket);
-}
+static int childFds[SIZE];
 
 static int user_read;
 int recv_user_cmd(){
@@ -85,6 +85,8 @@ int main(int argc, char const* argv[]){
     int server_fd = setup_server();
 
 
+    childFds[SIZE - 1] = 0;
+    int idCount = 0;
 
     //server loop
     while(1){
@@ -94,9 +96,13 @@ int main(int argc, char const* argv[]){
         int new_socket = accept(server_fd, NULL,NULL); //block until a client tries to connect
 
         printf("client connected. forking...\n");
+        int fds[2];
+        pipe(fds);
         if(fork()==0){//if fork is child
             // do what the server should do
-            server_action(new_socket);
+	    close(fds[1]);
+            printf("Child %d's read pipe file descriptor: %d\n", idCount, fds[0]);
+            listening_server_action(new_socket, fds[0]);
 
             //clean up
             close(new_socket);
@@ -105,6 +111,10 @@ int main(int argc, char const* argv[]){
         }
 
         //if we are not the subserver, close the socket to the client
+	close(fds[0]);
+	printf("Write pipe to child %d: %d\n", idCount, fds[1]);
+	childFds[idCount] = fds[1];
+	idCount++;
         close(new_socket);
   }
 
