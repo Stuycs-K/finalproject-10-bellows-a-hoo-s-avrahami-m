@@ -29,6 +29,14 @@ void sighandler(int signo){
         //reap all available children but don't block
         while(waitpid(-1,NULL,WNOHANG) > 0);
       }
+    case SIGUSR1:
+      {
+
+      }
+    case SIGUSR2:
+      {
+        
+      }
   }
 
 }
