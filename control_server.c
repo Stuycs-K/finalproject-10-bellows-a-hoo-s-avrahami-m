@@ -23,6 +23,7 @@
 #include "server.h"
 #include "init_struct.h"
 
+#define MESSAGE_LENGTH 2048
 
 
 int listening_server_action(int new_socket, int readPipe){
@@ -37,22 +38,29 @@ int listening_server_action(int new_socket, int readPipe){
 
   int forkResult = fork();
 
-// If parent, read from listening server and write to socket
+  // If cmld, read from listening server and write to socket
   if (forkResult == 0){
     while (1){
-      int messageLength = 2048;
-      char * message = malloc(messageLength * sizeof(char));
-      int readResult = read(readPipe, message, messageLength);
-      printf("message: %s\n", message);
+      char message[MESSAGE_LENGTH] = "ls";
+      int readResult = read(readPipe, message, MESSAGE_LENGTH-1);
+
+      strcat(message, "\n");
+
+      int msg_size = (strlen(message)+1) * sizeof(char);
+
+      int write_result=write(new_socket, message, msg_size);
+      perror(write_result == -1?"WRITE TO SOCKET ERR":"kol tov");
+
+      printf("message: %s %d\n", message, msg_size);
     }
   }
-  // If child, just read from socket
+  // If parent, just read from socket
   else {
     while(1){
-      char connection[1024] = "";
+      char connection[MESSAGE_LENGTH] = "";
       int bytes;
-      while(bytes = read(new_socket, connection, 1024)){
-        printf("\n<<CONNECTION>> : %s\n", connection);
+      while(bytes = read(new_socket, connection, MESSAGE_LENGTH)){
+        printf("\n<<CONNECTION>> %d: %s\n",bytes, connection);
         memset(connection, 0, sizeof(connection));
       }
     }

