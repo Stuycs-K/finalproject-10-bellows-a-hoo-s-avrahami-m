@@ -25,3 +25,6 @@ created the model for the many running programs that communicate for a seamless 
 created the listening server, user input server, control server model
 created listening server talks to uis model
 created working init struct to initiate reverse shell connection
+
+### 2025-05-21
+Finished the user shell communication system

