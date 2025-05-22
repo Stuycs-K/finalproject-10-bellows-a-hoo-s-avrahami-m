@@ -25,18 +25,15 @@
 void get_input(char * cmd, int * shellid){
   char buffer[1024] = "";
   memset(buffer, 0, sizeof(buffer));
-  printf(">> (d <cmd>):");
   fgets(buffer, sizeof(buffer), stdin);
-
   sscanf(buffer, "%d %[^\n]s", shellid, cmd);
 }
 int user_console(int write_end){
-
-
   while(1){
     int shellid;
     char cmd[1024];
-
+    
+    printf(">> (d <cmd>):");
     get_input(cmd, &shellid);
 
     int len_msg = sizeof(char) * (strlen(cmd) + 1);
