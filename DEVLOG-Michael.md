@@ -12,3 +12,6 @@ Discussed how to create a server that would receive a reverse shell from sudo. B
 
 ### 2025-05-20
 Implemented the listening server by listening to incoming connections on the socket. Any time a connection occurs, the listening server forks to get the child to deal with the incoming connection, and goes back to listening.
+
+### 2025-05-21
+Wrote some clean up code to make the sudo side of the code more manageable. Prepared for working more functionality into root mode of sudo.
