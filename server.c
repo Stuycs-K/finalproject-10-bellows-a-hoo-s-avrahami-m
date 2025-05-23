@@ -55,9 +55,9 @@ int recv_user_cmd(){
   read(user_read, &msg_ln, sizeof(msg_ln));
   read(user_read, cmd, msg_ln);
 
+  printf("==================command on child %d======================", shellid);
   write(childFds[shellid], cmd, msg_ln);
-  
-  printf("RECV: %d, %s\n", shellid, cmd);
+  printf("==================end command======================");
 }
 
 

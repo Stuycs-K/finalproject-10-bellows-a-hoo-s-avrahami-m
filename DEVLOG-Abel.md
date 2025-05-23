@@ -28,3 +28,6 @@ created working init struct to initiate reverse shell connection
 
 ### 2025-05-21
 Finished the user shell communication system
+
+### 2025-05-22
+devided shell communication system into two programs for better asthetics and usability

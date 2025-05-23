@@ -10,7 +10,7 @@ int main(int argc, char ** argv){
   }
   int pid;
   
-  sscanf("%d", argv[1], &pid);
+  sscanf(argv[1],"%d", &pid);
   
   user_console(FIFO_NAME, pid);
   return 0;
