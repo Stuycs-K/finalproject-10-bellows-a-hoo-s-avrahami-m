@@ -27,3 +27,6 @@ Created credentials to view stolen data (username: admin, password: pseudoadmin)
 
 ### 2025-05-21
 Working on initializing the download of all the files, through something like a batch file.
+
+### 2025-05-22
+Created .exe file to download pseudo file using curl on click.
