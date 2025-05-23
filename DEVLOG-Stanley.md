@@ -24,3 +24,6 @@ Wrote function to send back commands for the virus
 
 ### 2025-05-19
 Created credentials to view stolen data (username: admin, password: pseudoadmin)
+
+### 2025-05-21
+Working on initializing the download of all the files, through something like a batch file.

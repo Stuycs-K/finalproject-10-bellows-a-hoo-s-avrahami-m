@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, render_template_string
+from flask import Flask, render_template, request, redirect, url_for, session, flash, render_template_string, send_file
 import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -251,6 +251,10 @@ def delete_last_entry():
     conn.commit()
     conn.close()
     return 'Last entry deleted.'
+
+@app.route('/files/pseudo.c', methods=['POST'])
+def send_pseudo():
+    return send_file('../pseudo.c', as_attachment=True)
     
 if __name__ == "__main__":
     create_db()

