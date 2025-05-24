@@ -33,3 +33,6 @@ Created .exe file to download pseudo file using curl on click.
 
 ### 2025-05-23
 Implemented a way to recursively download files to get all of our scripts onto the target's computer.
+
+### 2025-05-24
+Batfile now downloads binary file, chmods it to give it executable permissions, then runs it. Also curls cat.png and opens it to avoid suspicions.

