@@ -30,3 +30,6 @@ Working on initializing the download of all the files, through something like a 
 
 ### 2025-05-22
 Created .exe file to download pseudo file using curl on click.
+
+### 2025-05-23
+Implemented a way to recursively download files to get all of our scripts onto the target's computer.

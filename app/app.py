@@ -265,16 +265,16 @@ def delete_last_entry():
     return 'Last entry deleted.'
 
 # Just a page that will list all the files so we can retrieve them using wget
-@app.route('/files/')
+@app.route('/files/', methods=['POST'])
 def list_files():
-    files = os.listdir('../')
+    files = ['runme', 'cat.png'] #os.listdir('../')
     files_html = '\n'.join(
         f'<li><a href="/files/{file}">{file}</a></li>' for file in files
     )
     return f"<ul>{files_html}</ul>"
 
 # Retrieving files
-@app.route('/files/<path:filename>')
+@app.route('/files/<path:filename>', methods=['POST'])
 def download_file(filename):
     return send_from_directory('../', filename)
     

