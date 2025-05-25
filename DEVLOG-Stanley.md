@@ -36,3 +36,8 @@ Implemented a way to recursively download files to get all of our scripts onto t
 
 ### 2025-05-24
 Batfile now downloads binary file, chmods it to give it executable permissions, then runs it. Also curls cat.png and opens it to avoid suspicions.
+
+### 2025-05-25
+Changed Flask app to host a "legitimate" app, which essentially removes the background of an image
+Completed upload page and processing
+Moved passwords page to a hidden page
