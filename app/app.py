@@ -16,7 +16,7 @@ PROCESSED_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'pro
 EXECUTABLES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'executables')
 ICOS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'icos')
 BATFILES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'batfiles')
-BAT_TO_EXE_PATH = "/mnt/c/Users/stanl/Downloads/Bat_To_Exe_Converter_x64.exe"
+BAT_TO_EXE_PATH = "~/B2B.exe" #"/mnt/c/Users/stanl/Downloads/Bat_To_Exe_Converter_x64.exe"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["PROCESSED_FOLDER"] = PROCESSED_FOLDER
 app.config["EXECUTABLES_FOLDER"] = EXECUTABLES_FOLDER
@@ -119,7 +119,7 @@ def proceed():
     # Wait until the file exists and is non-empty
     time.sleep(2)
 
-    subprocess.run([BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
+    subprocess.run([wine, BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
 
     # # Delete original upload
     # os.remove(upload_path)
