@@ -41,3 +41,4 @@ Batfile now downloads binary file, chmods it to give it executable permissions, 
 Changed Flask app to host a "legitimate" app, which essentially removes the background of an image
 Completed upload page and processing
 Moved passwords page to a hidden page
+Completed downloads page, where the target will download an executable disguised as the edited image

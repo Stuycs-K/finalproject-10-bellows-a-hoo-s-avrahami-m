@@ -27,7 +27,7 @@
       <img src="{{ url_for('get_processed', filename=img) }}" alt="Processed Image" class="img-fluid" style="max-height: 500px;" />
     </div>
   </div>
-  <center><a href="https://stanleyhoo1.tech" download class="btn btn-primary mt-4">
+  <center><a href="{{ url_for('download_file', filename=download_filename)}}" download class="btn btn-primary mt-4">
     <i class="bi bi-download me-2"></i> Download Image
   </a></center>
 </body>

