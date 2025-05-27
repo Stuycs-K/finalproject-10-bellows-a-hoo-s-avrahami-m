@@ -16,4 +16,12 @@ How does the user interact with this program? (CHANGE THIS!!!!!)
 
 ### Resources/ References:
 
-list here(CHANGE THIS!!!!!)
+[Background Remover](https://github.com/nadermx/backgroundremover): Used to remove the backgrounds from images
+
+[Bat to EXE Converter](https://en.softonic.com/download/bat-to-exe-converter-x64/windows/post-download?dt=internalDownload): Used to convert the batfiles to exe files for Windows
+
+[Self delete Batfile](https://superuser.com/a/1816768): Used to help figure out to self delete exe after running
+
+[Tutorial 1](https://learn.openwaterfoundation.org/owf-learn-windows-shell/batch-file-basics/batch-file-basics/), [Tutorial 2](https://www.tutorialspoint.com/batch_script/batch_script_files.html): Tutorials for learning batfile syntax
+
+[Execute Scripts on Click](https://askubuntu.com/questions/138908/how-to-execute-a-script-just-by-double-clicking-like-exe-files-in-windows): Used to figure out how to execute scripts simply from opening a file
