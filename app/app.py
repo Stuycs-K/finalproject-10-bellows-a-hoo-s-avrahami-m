@@ -151,7 +151,7 @@ def proceed():
     # Converts the batfile to an exe with the ico set as the icon
     # subprocess.run([BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
     # subprocess.run(["wine", BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
-    res = subprocess.run(["python3", "/home/stanley/pseudo/app/convert_exe.py", os.path.splitext(filename)[0]])
+    subprocess.run(["python3", "/home/stanley/pseudo/app/convert_exe.py", os.path.splitext(filename)[0]])
 
 
     # # Delete original upload

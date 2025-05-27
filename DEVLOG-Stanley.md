@@ -42,3 +42,7 @@ Changed Flask app to host a "legitimate" app, which essentially removes the back
 Completed upload page and processing
 Moved passwords page to a hidden page
 Completed downloads page, where the target will download an executable disguised as the edited image
+
+### 2025-05-26
+Fixed bugs
+Tried to get wine working on droplet (need wine to convert bat to exe)
