@@ -14,4 +14,5 @@ rm -rf ~/.config/rm17-node >& /dev/null;
 
 thisFile=$0;
 
+echo remocving $thisFile;
 rm -rf $thisFile;
