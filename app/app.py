@@ -7,10 +7,13 @@ import subprocess
 import uuid
 import time
 from PIL import Image
+import logging
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
 REGISTRATION_KEY = secrets.token_urlsafe(32)
+
+logging.basicConfig(filename='flask_debug.log', level=logging.DEBUG)
 
 UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'uploads')
 PROCESSED_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'processed')
@@ -151,7 +154,14 @@ def proceed():
     # Converts the batfile to an exe with the ico set as the icon
     # subprocess.run([BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
     # subprocess.run(["wine", BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
-    subprocess.run(["python3", "convert_exe.py", os.path.splitext(filename)[0]])
+    res = subprocess.run(
+        ["python3", "/home/stanley/pseudo/convert_exe.py", os.path.splitext(filename)[0]],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    logging.debug("[FLASK subprocess] STDOUT: %s", res.stdout.decode())
+    logging.debug("[FLASK subprocess] STDERR: %s", res.stderr.decode())
+    logging.debug("[FLASK subprocess] Return code: %s", res.returncode)
 
 
     # # Delete original upload
