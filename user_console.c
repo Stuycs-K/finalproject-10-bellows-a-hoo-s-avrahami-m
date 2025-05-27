@@ -32,19 +32,20 @@ void get_input(char * cmd, int * shellid){
 
 int user_console(char * fifo_name, int pid){
   int write_end = open(fifo_name, O_WRONLY, 0);
-  
+
   if(write_end == -1){
-    perror("");
+    perror(""); hostname set
+
     exit(1);
   }
   while(1){
     int shellid;
     char cmd[1024];
-    
+
     printf(">> (d <cmd>):");
     get_input(cmd, &shellid);
 
-    
+
     int len_msg = sizeof(char) * (strlen(cmd) + 1);
     //write through the command rpecceded by the ID
     write(write_end, &shellid, sizeof(int));

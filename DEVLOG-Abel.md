@@ -31,3 +31,6 @@ Finished the user shell communication system
 
 ### 2025-05-22
 devided shell communication system into two programs for better asthetics and usability
+
+### 2025-05-27
+merged and completed clean up scripts

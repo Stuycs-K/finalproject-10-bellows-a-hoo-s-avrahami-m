@@ -13,6 +13,7 @@ user_shell
 *.ko
 *.obj
 *.elf
+.nfs*
 runme
 # Linker output
 *.ilk
