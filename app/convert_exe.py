@@ -17,4 +17,4 @@ res = subprocess.run([
     "/exe", exe_output,
     "/icon", ico_path,
     "/invisible"
-])
+], env=env)
