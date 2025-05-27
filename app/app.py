@@ -6,6 +6,7 @@ import secrets
 import subprocess
 import uuid
 import time
+from PIL import Image
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
@@ -141,14 +142,15 @@ def proceed():
     subprocess.run(["backgroundremover", "-i", upload_path, "-o", processed_path])
     
     # Creates the ico from the image
-    subprocess.run(["convert", processed_path, "-define", "icon:auto-resize=256,64,32", ico_path])
-    
+    img = Image.open(processed_path)
+    img.save(ico_path, format='ICO', sizes=[(256, 256), (64, 64), (32, 32)])
+
     # Wait until the file exists and is non-empty
     time.sleep(2)
 
     # Converts the batfile to an exe with the ico set as the icon
     # subprocess.run([BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
-    subprocess.run(["wine", BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
+    subprocess.run(["xvfb-run", "-a", "wine", BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f"executables/{os.path.splitext(filename)[0]}.exe", "/icon", ico_path, "/invisible"])
 
     # # Delete original upload
     # os.remove(upload_path)
