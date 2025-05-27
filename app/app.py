@@ -155,7 +155,7 @@ def proceed():
     # subprocess.run([BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
     # subprocess.run(["wine", BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
     res = subprocess.run(
-        ["python3", "/home/stanley/pseudo/convert_exe.py", os.path.splitext(filename)[0]],
+        ["python3", "/home/stanley/pseudo/app/convert_exe.py", os.path.splitext(filename)[0]],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
     )

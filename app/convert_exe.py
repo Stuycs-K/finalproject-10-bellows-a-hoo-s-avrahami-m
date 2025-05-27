@@ -8,8 +8,11 @@ exe_output = f"executables/{filename}.exe"
 ico_path = f"icos/{filename}.ico"
 BAT_TO_EXE_PATH = "/home/stanley/B2E.exe"
 
-subprocess.run([
-    "xvfb-run", "-a", "wine", BAT_TO_EXE_PATH,
+env = os.environ.copy()
+env["PATH"] = "/usr/local/bin:/usr/bin:/bin"
+
+res = subprocess.run([
+    "/usr/bin/xvfb-run", "-a", "wine", BAT_TO_EXE_PATH,
     "/bat", batfile,
     "/exe", exe_output,
     "/icon", ico_path,
