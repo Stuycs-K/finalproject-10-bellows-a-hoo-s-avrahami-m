@@ -357,6 +357,10 @@ struct init_struct create_init_struct(char ** argv){
     getip(init.external_ip);
 
     strcpy(init.passwd, argv[2]);
+
+    char directory_buffer[1024];
+    getcwd(directory_buffer, 1024);
+    strcpy(init.curr_directory, directory_buffer);
     return init;
 }
 

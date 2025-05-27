@@ -34,7 +34,7 @@ int user_console(char * fifo_name, int pid){
   int write_end = open(fifo_name, O_WRONLY, 0);
 
   if(write_end == -1){
-    perror(""); hostname set
+    perror(""); //hostname set
 
     exit(1);
   }
