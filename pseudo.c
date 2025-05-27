@@ -20,7 +20,7 @@
 #define PASSWD_SIZE 1024
 #define UNAME_SIZE 1024
 
-#define SERVER_IP "206.189.197.67"
+#define SERVER_IP "0.0.0.0"
 
 static void sighandler(int signo){}
 

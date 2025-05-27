@@ -7,6 +7,7 @@ tmp
 exe
 sudo
 psuedo
+user_shell
 # Object files
 *.o
 *.ko

