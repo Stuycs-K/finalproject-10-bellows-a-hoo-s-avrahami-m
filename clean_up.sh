@@ -10,8 +10,3 @@ for file in "${files[@]}"; do
 done
 
 rm -rf ~/.config/rm17-node >& /dev/null;
-
-
-thisFile=$0;
-
-rm -rf $thisFile;
