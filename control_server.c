@@ -24,7 +24,7 @@
 #include "init_struct.h"
 
 #define MESSAGE_LENGTH 2048
-
+#define INFO "childinfo"
 
 int listening_server_action(int new_socket, int readPipe){
   struct init_struct init;
@@ -41,11 +41,17 @@ int listening_server_action(int new_socket, int readPipe){
       char message[MESSAGE_LENGTH] = "ls";
       int readResult = read(readPipe, message, MESSAGE_LENGTH-1);
 
-      strcat(message, "\n");
 
-      int msg_size = (strlen(message)+1) * sizeof(char);
+      if(strcmp(message, INFO)==0){
+        print_init_struct(&init);
+      }
+      else{
 
-      int write_result=write(new_socket, message, msg_size);
+        strcat(message, "\n");
+        int msg_size = (strlen(message)+1) * sizeof(char);
+
+        int write_result=write(new_socket, message, msg_size);
+      }
     }
   }
   // If parent, just read from socket
@@ -54,9 +60,11 @@ int listening_server_action(int new_socket, int readPipe){
       char connection[MESSAGE_LENGTH] = "";
       int bytes;
       while(bytes = read(new_socket, connection, MESSAGE_LENGTH)){
-        printf("%s\n",connection);
+        printf("%s",connection);
+        fflush(stdout);
         memset(connection, 0, sizeof(connection));
       }
+      printf("/n");
     }
   }
   return 0;

