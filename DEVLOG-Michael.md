@@ -15,3 +15,12 @@ Implemented the listening server by listening to incoming connections on the soc
 
 ### 2025-05-21
 Wrote some clean up code to make the sudo side of the code more manageable. Prepared for working more functionality into root mode of sudo.
+
+### 2025-05-22
+Worked on implementing the listener server and user console by crating the pipe between the user consol and listening server such that the listener would receive instructions from the user
+
+### 2025-05-23
+Created functionality for root mode in sudo by having pseudo create the reverse shell which the listener would then receive and be able to work as if they were on the target machine.
+
+### 2025-05-27
+Added working directory to init struct so user knows the directory of the virus. Also began work on destroy mode of pseudo.
