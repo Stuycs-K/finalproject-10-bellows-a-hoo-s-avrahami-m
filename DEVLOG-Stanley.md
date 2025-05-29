@@ -48,7 +48,10 @@ Fixed bugs
 Tried to get wine working on droplet (need wine to convert bat to exe)
 
 ### 2025-05-27
-Working on .desktop filee for linux
+Working on .desktop file for linux
 
 ### 2025-05-28
 Added additional routes to the Flask app
+
+### 2025-05-29
+Working on .desktop file, figured out basics and how to run it
