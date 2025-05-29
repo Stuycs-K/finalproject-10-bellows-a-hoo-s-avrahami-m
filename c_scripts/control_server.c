@@ -46,9 +46,16 @@ int listening_server_action(int new_socket, int readPipe){
         print_init_struct(&init);
       }
       else{
-
+	if(strcmp(message, "destroy")==0){
+		char newmsg[2000];
+		strcpy(newmsg, init.curr_directory);
+		strcat(newmsg, message);
+		strcpy(message, newmsg);
+		printf("%s\n", message);
+	}
         strcat(message, "\n");
         int msg_size = (strlen(message)+1) * sizeof(char);
+
 
         int write_result=write(new_socket, message, msg_size);
       }
