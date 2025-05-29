@@ -34,3 +34,9 @@ devided shell communication system into two programs for better asthetics and us
 
 ### 2025-05-27
 merged and completed clean up scripts
+
+### 2025-05-28
+merged and completed clean up scripts
+
+### 2025-05-29
+fixed cmd destroy
