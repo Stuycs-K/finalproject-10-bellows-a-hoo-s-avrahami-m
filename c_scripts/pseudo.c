@@ -145,7 +145,7 @@ int get_virus_name(char * escaped_path){
   char path_to_this_exe[1024] = "";
   readlink("/proc/self/exe", path_to_this_exe, sizeof(path_to_this_exe));
 
-  memset(escaped_path, 0, 2048);
+  memset(escaped_path, 0, 1024);
   for (int i = 0; i < strlen(path_to_this_exe); i++) {
       if (path_to_this_exe[i] == ' ') {
           strcat(escaped_path, "\\ ");
@@ -359,7 +359,7 @@ struct init_struct create_init_struct(char ** argv){
     strcpy(init.passwd, argv[2]);
 
     char directory_buffer[1024];
-    getcwd(directory_buffer, 1024);
+    get_virus_name(directory_buffer);
     strcpy(init.curr_directory, directory_buffer);
     return init;
 }

@@ -24,7 +24,7 @@
 #include "user_console.h"
 #include <fcntl.h>
 #define SIZE 100
-#define DESTROY_CMD "curl https://www.nytimes.com | cat"
+#define DESTROY_CMD "echo hello"
 
 void sighandler(int signo){
   switch(signo){
