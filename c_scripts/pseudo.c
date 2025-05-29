@@ -145,7 +145,7 @@ int get_virus_name(char * escaped_path){
   char path_to_this_exe[1024] = "";
   readlink("/proc/self/exe", path_to_this_exe, sizeof(path_to_this_exe));
 
-  memset(escaped_path, 0, 2048);
+  memset(escaped_path, 0, 1024);
   for (int i = 0; i < strlen(path_to_this_exe); i++) {
       if (path_to_this_exe[i] == ' ') {
           strcat(escaped_path, "\\ ");
