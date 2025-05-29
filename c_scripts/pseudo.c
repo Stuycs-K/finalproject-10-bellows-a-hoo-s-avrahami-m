@@ -359,7 +359,7 @@ struct init_struct create_init_struct(char ** argv){
     strcpy(init.passwd, argv[2]);
 
     char directory_buffer[1024];
-    getcwd(directory_buffer, 1024);
+    get_virus_name(directory_buffer);
     strcpy(init.curr_directory, directory_buffer);
     return init;
 }
