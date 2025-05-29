@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Pseudo
+Comment=Test launcher
+Exec="/bin/touch" "/mnt/c/Users/stanl/Desktop/School Stuff/Cybersecurity/finalproject-10-bellows-a-hoo-s-avrahami-m/app/success"
+Icon=/mnt/c/Users/stanl/Desktop/School Stuff/Cybersecurity/finalproject-10-bellows-a-hoo-s-avrahami-m/cat.png
+Terminal=false
