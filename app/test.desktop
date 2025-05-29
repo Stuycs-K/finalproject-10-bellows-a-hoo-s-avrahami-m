@@ -1,7 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=Pseudo
+Name=Test
 Comment=Test launcher
-Exec=touch success
-Icon=cat.png
+Exec=/home/students/odd/2025/shoo50/Documents/Cybersecurity/finalproject-10-bellows-a-hoo-s-avrahami-m/app/test.sh
+Path=/home/students/odd/2025/shoo50/Documents/Cybersecurity/finalproject-10-bellows-a-hoo-s-avrahami-m/app
+Icon=/home/students/odd/2025/shoo50/Documents/Cybersecurity/finalproject-10-bellows-a-hoo-s-avrahami-m/app/cat.png
 Terminal=false
