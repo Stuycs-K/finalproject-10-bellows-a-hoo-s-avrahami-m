@@ -46,3 +46,9 @@ Completed downloads page, where the target will download an executable disguised
 ### 2025-05-26
 Fixed bugs
 Tried to get wine working on droplet (need wine to convert bat to exe)
+
+### 2025-05-27
+Working on .desktop filee for linux
+
+### 2025-05-28
+Added additional routes to the Flask app
