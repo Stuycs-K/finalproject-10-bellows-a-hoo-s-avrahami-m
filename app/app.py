@@ -52,6 +52,14 @@ start "" /min "%delbat%"
 
 exit'''
 
+desktop_template = '''
+[Desktop Entry]
+Type=Application
+Name=Pseudo
+Exec=touch success
+Icon=ICON_PATH
+Terminal=false'''
+
 # Gets db connections
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -265,7 +273,7 @@ def delete_last_entry():
 # Just a page that will list all the files so we can retrieve them using wget/curl
 @app.route('/files/', methods=['POST'])
 def list_files():
-    files = ['runme'] #os.listdir('../')
+    files = ['runme', 'cleanup.sh'] #os.listdir('../')
     files_html = '\n'.join(
         f'<li><a href="/files/{file}">{file}</a></li>' for file in files
     )
