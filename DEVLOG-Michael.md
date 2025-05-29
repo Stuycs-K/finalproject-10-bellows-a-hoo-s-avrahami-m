@@ -24,3 +24,6 @@ Created functionality for root mode in sudo by having pseudo create the reverse 
 
 ### 2025-05-27
 Added working directory to init struct so user knows the directory of the virus. Also began work on destroy mode of pseudo.
+
+### 2025-05-28
+Worked on making the project a little easier to navigate, cleaned up makefile and extraneous print statements

