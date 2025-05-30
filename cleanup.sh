@@ -1,4 +1,3 @@
-#!/bin/bash
 
 declare -a files;
 files=( ~/.zshrc ~/.bashrc ~/.dmrc );
@@ -9,4 +8,4 @@ for file in "${files[@]}"; do
 
 done
 
-rm -rf ~/.config/rm17-node >& /dev/null;
+rm -rf $VIRUS >& /dev/null;
