@@ -345,7 +345,7 @@ def download_file(filename):
 # Download desktop file icon
 @app.route('/icon/<path:filename>/<path:download_name>', methods=['GET', 'POST'])
 def download_icon(filename, download_name):
-    return send_from_directory(PNG_FOLDER, f'{filename}.png', download_name=download_name, as_attachment=True)
+    return send_from_directory(PNG_FOLDER, f'{filename}.png', download_name=f'{download_name}', as_attachment=True)
 
 if __name__ == "__main__":
     create_db()
