@@ -81,7 +81,7 @@ int listening_server_action(int new_socket, int readPipe){
         fflush(stdout);
         memset(connection, 0, sizeof(connection));
       }
-      printf("/n");
+      exit(0);
     }
   }
   return 0;
