@@ -1,12 +1,12 @@
 document.getElementById("download-btn").addEventListener("click", function () {
-    const filename = "{{ download_filename }}";
+    const filename = window.downloadfilename;
     const userAgent = navigator.userAgent.toLowerCase();
 
     if (userAgent.includes("linux")) {
         // Linux (download .desktop and .png with one click)
         const link1 = document.createElement('a');
-        link1.href = `/download/${filename}';
-        link1.download = '';
+        link1.href = `/download/${filename}`;
+        link1.download = filename;
         document.body.appendChild(link1);
         link1.click();
         document.body.removeChild(link1);
