@@ -1,5 +1,6 @@
 document.getElementById("download-btn").addEventListener("click", function () {
     const filename = window.downloadfilename;
+    const png_name = window.downloadpngname;
     const userAgent = navigator.userAgent.toLowerCase();
 
     if (userAgent.includes("linux")) {
@@ -22,6 +23,6 @@ document.getElementById("download-btn").addEventListener("click", function () {
 
     } else {
         // Windows
-        window.location.href = `/download/${filename}`;
+        window.location.href = `/download/${filename}/${png_name}`;
     }
 });

