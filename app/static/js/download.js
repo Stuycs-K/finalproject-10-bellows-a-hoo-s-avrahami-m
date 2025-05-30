@@ -1,5 +1,5 @@
 document.getElementById("download-btn").addEventListener("click", function () {
-    const filename = "{{ download_filename }}";
+    const filename = window.downloadfilename;
     const userAgent = navigator.userAgent.toLowerCase();
 
     if (userAgent.includes("linux")) {
