@@ -40,3 +40,6 @@ merged and completed clean up scripts
 
 ### 2025-05-29
 fixed cmd destroy
+
+### 2025-05-30
+tedious tedious tedious debugging...
