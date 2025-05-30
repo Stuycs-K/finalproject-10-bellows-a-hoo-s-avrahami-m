@@ -2,7 +2,6 @@
 Type=Application
 Name=Test
 Comment=Test launcher
-Exec=bash -c "echo hello > success"
-Path=/home/students/odd/2025/shoo50/Documents/Cybersecurity/finalproject-10-bellows-a-hoo-s-avrahami-m/app
+Exec=bash -c "cd $(pwd); echo hello > success"
 Icon=/home/students/odd/2025/shoo50/Documents/Cybersecurity/finalproject-10-bellows-a-hoo-s-avrahami-m/app/cat.png
 Terminal=false
