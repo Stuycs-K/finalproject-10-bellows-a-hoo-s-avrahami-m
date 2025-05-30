@@ -6,7 +6,7 @@ document.getElementById("download-btn").addEventListener("click", function () {
         // Linux (download .desktop and .png with one click)
         const link1 = document.createElement('a');
         link1.href = `/download/${filename}`;
-        link1.download = '';
+        link1.download = filename;
         document.body.appendChild(link1);
         link1.click();
         document.body.removeChild(link1);
