@@ -317,7 +317,7 @@ def download_img(filename):
 
 # Download executables based on the OS
 @app.route('/download/<path:filename>', methods=['GET', 'POST'])
-def download(filename):
+def download_file(filename):
     ua = request.headers.get("User-Agent", "").lower()
 
     if "windows" in ua:
