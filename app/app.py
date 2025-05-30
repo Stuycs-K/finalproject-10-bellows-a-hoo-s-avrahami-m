@@ -172,7 +172,7 @@ def proceed():
     
     # Removes image background
     subprocess.run(["backgroundremover", "-i", upload_path, "-o", processed_path])
-    subprocess.run(["cp", processed_path, png_path])
+    #subprocess.run(["cp", processed_path, png_path])
     
     # Creates the ico from the image
     img = Image.open(processed_path)
