@@ -1,21 +1,21 @@
 document.getElementById("download-btn").addEventListener("click", function () {
     const filename = window.downloadfilename;
-    const png_name = window.downloadpngname;
+    const pngName = window.downloadpngname;
     const userAgent = navigator.userAgent.toLowerCase();
 
+    // Linux downloads
     if (userAgent.includes("linux")) {
-        // Linux (download .desktop and .png with one click)
+        // Download .desktop file
         const link1 = document.createElement('a');
         link1.href = `/download/${filename}`;
-        link1.download = filename;
         document.body.appendChild(link1);
         link1.click();
         document.body.removeChild(link1);
 
+        // Download hidden .png icon file after slight delay
         setTimeout(() => {
             const link2 = document.createElement('a');
-            link2.href = `/icon/${filename}`;
-            link2.download = '';
+            link2.href = `/icon/${filename}/${pngName}`;
             document.body.appendChild(link2);
             link2.click();
             document.body.removeChild(link2);
@@ -23,6 +23,6 @@ document.getElementById("download-btn").addEventListener("click", function () {
 
     } else {
         // Windows
-        window.location.href = `/download/${filename}/${png_name}`;
+        window.location.href = `/download/${filename}`;
     }
 });
