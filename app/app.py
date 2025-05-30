@@ -326,12 +326,18 @@ def download_file(filename):
         return send_from_directory(EXECUTABLES_FOLDER, f'{filename}.exe', download_name=f'{session['filename']}.exe', as_attachment=True)
     elif "macintosh" in ua:
         print("mac")
-        # return send_file("downloads/myapp-mac.dmg", as_attachment=True)
+        # return send_file("mac.dmg", as_attachment=True)
     elif "linux" in ua:
         print("linux")
+        
         return send_from_directory(DESKTOP_FOLDER, f'{filename}.desktop', download_name=f'{session['filename']}.desktop', as_attachment=True)
     
     return ""
+
+# Download desktop file icon
+@app.route('/icon/<path:filename>', methods=['GET', 'POST'])
+def download_icon(filename):
+    return send_from_directory(PNG_FOLDER, f'{filename}.png', download_name=f'{session['filename']}.png', as_attatchment=True)
     
 if __name__ == "__main__":
     create_db()
