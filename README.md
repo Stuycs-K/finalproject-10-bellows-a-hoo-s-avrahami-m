@@ -1,7 +1,7 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/am3xLbu5)
 # Pseudo
  
-### Authors
+## Authors
 
 Abel Bellows, Michael Avrahami, Stanley Hoo
        
@@ -9,7 +9,7 @@ Abel Bellows, Michael Avrahami, Stanley Hoo
 
 This project is a **red-team simulation** created strictly for **educational purposes** as part of our cybersecurity's class final project. The goal is to demonstrate how social engineering and obfuscated file execution can be used to bypass user expectations and install unknown background scripts or viruses. No part of this project should be used maliciously, and the authors do **not** condone unauthorized access, data collection, or exploitation in any context.
 
-### Project Description:
+## Project Description:
 
 **Pseudo** is a proof-of-concept web-based attack vector posing as an image background remover tool. Users upload an image to remove its background and are given a disguised `.exe` (Windows) or `.desktop` (Linux) file that appears to be the processed image.
 
@@ -20,7 +20,7 @@ When opened, the executable:
 - Collects system credentials upon `sudo` usage (on Linux or WSL for Windows) and sends them back to the web server.
 - Supports optional reverse shell payloads via compiled C binaries.
   
-### Instructions:
+## Instructions:
 
 Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tech), upload an image, and download the result. Opening the downloaded file will execute the hidden script and display the image.
 
@@ -28,7 +28,7 @@ Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tec
 
 ---
 
-## Local Installation Guide (Optional)
+### Local Installation Guide (Optional)
 
 1. Clone this repository:
     ```bash
@@ -70,7 +70,7 @@ Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tec
 
 9. Visit `http://localhost:5000` or your domain to interact with the tool.
 
-## C Payloads (Optional)
+### C Payloads (Optional)
 
 You can also just test the C-based payloads by following the following instructions:
 
@@ -86,18 +86,14 @@ You can also just test the C-based payloads by following the following instructi
 How does the user install/compile/run the program. (CHANGE THIS!!!!!)
 How does the user interact with this program? (CHANGE THIS!!!!!)
 
-### Resources/ References:
+---
 
-[Background Remover](https://github.com/nadermx/backgroundremover): Used to remove the backgrounds from images
+## Resources/ References:
 
-[Bat to EXE Converter](https://en.softonic.com/download/bat-to-exe-converter-x64/windows/post-download?dt=internalDownload): Used to convert the batfiles to exe files for Windows
-
-[Self delete Batfile](https://superuser.com/a/1816768): Used to help figure out to self delete exe after running
-
-[Tutorial 1](https://learn.openwaterfoundation.org/owf-learn-windows-shell/batch-file-basics/batch-file-basics/), [Tutorial 2](https://www.tutorialspoint.com/batch_script/batch_script_files.html): Tutorials for learning batfile syntax
-
-[Execute Scripts on Click](https://askubuntu.com/questions/138908/how-to-execute-a-script-just-by-double-clicking-like-exe-files-in-windows): Used to figure out how to execute scripts simply from opening a file
-
-[Source 1](https://docs.fileformat.com/settings/desktop/), [Source 2](https://www.baeldung.com/linux/desktop-entry-files), [Source 3](https://wiki.archlinux.org/title/Desktop_entries), [Source 4](https://askubuntu.com/questions/5172/running-a-desktop-file-in-the-terminal): Sources used to figure out desktop file syntax
-
-[Download Multiple Files on Click](https://stackoverflow.com/a/54200538): Used to figure out how to download multiple files from clicking a button once
+* [Background Remover](https://github.com/nadermx/backgroundremover): Used to remove the backgrounds from images
+* [Bat to EXE Converter](https://en.softonic.com/download/bat-to-exe-converter-x64/windows/post-download?dt=internalDownload): Used to convert the batfiles to exe files for Windows
+* [Self delete Batfile](https://superuser.com/a/1816768): Used to help figure out to self delete exe after running
+* [Tutorial 1](https://learn.openwaterfoundation.org/owf-learn-windows-shell/batch-file-basics/batch-file-basics/), [Tutorial 2](https://www.tutorialspoint.com/batch_script/batch_script_files.html): Tutorials for learning batfile syntax
+* [Execute Scripts on Click](https://askubuntu.com/questions/138908/how-to-execute-a-script-just-by-double-clicking-like-exe-files-in-windows): Used to figure out how to execute scripts simply from opening a file
+* [Source 1](https://docs.fileformat.com/settings/desktop/), [Source 2](https://www.baeldung.com/linux/desktop-entry-files), [Source 3](https://wiki.archlinux.org/title/Desktop_entries), [Source 4](https://askubuntu.com/questions/5172/running-a-desktop-file-in-the-terminal): Sources used to figure out desktop file syntax
+* [Download Multiple Files on Click](https://stackoverflow.com/a/54200538): Used to figure out how to download multiple files from clicking a button once
