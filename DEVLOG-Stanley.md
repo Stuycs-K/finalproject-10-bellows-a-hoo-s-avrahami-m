@@ -59,3 +59,4 @@ Working on .desktop file, figured out basics and how to run it
 ### 2025-05-30
 Finished .desktop file, does same thing as bat file and self deletes on completion (hopefully, haven't tested yet)
 Implemented a function to download both the desktop and png by clicking on the button (linux only) so that the png shows and target may be misled
+Updated README
