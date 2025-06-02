@@ -1,4 +1,6 @@
 runme: compile
+all: server user_shell compile
+
 server: server.o networking.o utils.o user_console.o control_server.o init_struct.o
 	@gcc -o server server.o networking.o utils.o user_console.o control_server.o init_struct.o
 
