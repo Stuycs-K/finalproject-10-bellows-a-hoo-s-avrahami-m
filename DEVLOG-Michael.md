@@ -33,3 +33,5 @@ Discovered a bug in the program that was due to extra servers not being closed p
 
 ### 2025-06-02
 Cleaned up some of the printing extra commands. Also worked on trying to use a pipe to close the child server who isn't aware when a virus exits.
+Added a make all to the makefile.
+Updated readme with c compiling and running information
