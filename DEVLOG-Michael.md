@@ -27,3 +27,9 @@ Added working directory to init struct so user knows the directory of the virus.
 
 ### 2025-05-28
 Worked on making the project a little easier to navigate, cleaned up makefile and extraneous print statements
+
+### 2025-05-29
+Discovered a bug in the program that was due to extra servers not being closed properly upon virus termination. Looked into fixing it via pipes
+
+### 2025-06-02
+Cleaned up some of the printing extra commands. Also worked on trying to use a pipe to close the child server who isn't aware when a virus exits.
