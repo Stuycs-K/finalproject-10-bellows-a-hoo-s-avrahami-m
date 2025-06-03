@@ -48,6 +48,10 @@ void sighandler(int signo){
         printf("CHECKING IN.... My Pid is %d \nim a %s\n", getpid(), server_name);
         break;
       }
+    case SIGPIPE:
+      {
+        printf("SIGPIPE from using bad user number...\n");
+      }
   }
 
 }
@@ -68,7 +72,7 @@ int recv_user_cmd(){
   else{
       // strcpy(cmd, special_cmd(cmd));
       // msg_ln = strlen(cmd) +1;
-      printf("%s\n", cmd);
+      printf("%d %s\n\n", shellid, cmd);
     write(childFds[shellid], cmd, msg_ln);
   }
 }
@@ -78,6 +82,7 @@ int main(int argc, char const* argv[]){
     signal(SIGCHLD, sighandler); //set SIGCHILD to reaper...
     signal(SIGUSR1, sighandler);
     signal(SIGUSR2, sighandler);
+    signal(SIGPIPE, sighandler);
 
     mkfifo(FIFO_NAME, 0777);
 
@@ -107,6 +112,7 @@ int main(int argc, char const* argv[]){
             //clean up
             close(new_socket);
             printf("closing connection to user...\n");
+            printf("DO NOT USE %d\n", idCount);
             exit(0);
         }
 

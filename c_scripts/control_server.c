@@ -22,6 +22,7 @@
 #include "networking.h"
 #include "server.h"
 #include "init_struct.h"
+#include <signal.h>
 
 #define MESSAGE_LENGTH 2048
 #define INFO "childinfo"
@@ -82,18 +83,15 @@ int listening_server_action(int new_socket, int readPipe){
   // If parent, just read from socket
   else {
     server_name = CONTROL_SERVER_READ;
-    while(1){
-      
-      char connection[MESSAGE_LENGTH] = "";
-      int bytes;
-      while(bytes = read(new_socket, connection, MESSAGE_LENGTH)){
-        printf("%s",connection);
-        fflush(stdout);
-        memset(connection, 0, sizeof(connection));
-      }
 
-      printf("CONNECTION CLOSED...\n");
+    char connection[MESSAGE_LENGTH] = "";
+    int bytes;
+    while(bytes = read(new_socket, connection, MESSAGE_LENGTH)){
+      printf("%s",connection);
+      fflush(stdout);
+      memset(connection, 0, sizeof(connection));
     }
+    kill(forkResult, 9);
   }
   return 0;
 }
