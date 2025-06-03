@@ -43,3 +43,6 @@ fixed cmd destroy
 
 ### 2025-05-30
 tedious tedious tedious debugging...
+
+### 2025-06-02
+FIXED THE CRAZY EXITING ERR 3hr
