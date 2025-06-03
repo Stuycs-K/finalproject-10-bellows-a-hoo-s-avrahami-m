@@ -84,26 +84,27 @@ You can also just test the C-based payloads by following these instructions:
 
    Once in the c_scripts directory, type `make all` to compile
 
-3. fork() (metaphorically). To setup the server read steps 4-6. To run the virus skip to step 7.
+3. fork() (metaphorically). To setup the server read steps 4-6. To run the virus skip to step 8.
 
 4. Open the pseudo.c file and check what the value of SERVER_IP is. If not 0.0.0.0, change to "0.0.0.0"
-4. To run the server, type in the command `./server`.
+
+5. To run the server, type in the command `./server`.
  * This will be the server that receives all of the incoming reverse shells from virus connections. It will display all of the output from each reverse shell corresponding to a virus
  * Note the command you are told to run (it should be "./user_shell PID" where PID is some number)
 
-5. Open a new terminal, and navigate once more to the c_scripts directory. There, enter the command given to you by the server.
+6. Open a new terminal, and navigate once more to the c_scripts directory. There, enter the command given to you by the server.
  * This is where the user will enter the commands that will be transmitted to the reverse shells. The method to enter commands is described there
 
-6. Once a virus connects to the server, you will be able to type commands that will be transmitted directly to the target's machine.
+7. Once a virus connects to the server, you will be able to type commands that will be transmitted directly to the target's machine.
  * Two special commands (d is some digit corresponding to a virus) are
    a) `d childinfo` reprints a bunch of info about the target machine, like ip address and sudo password
    b) `d destroy` deletes the sudo alias from any rc files and removes the virus itself from the target machine, leaving no trace
 
 ------ Virus Instructions ------
    
-7. To create the alias for sudo type `make implant`. If you used the above method with the downloading the image and executable this step is unnecessary
+8. To create the alias for sudo type `make implant`. If you used the above method with the downloading the image and executable this step is unnecessary
 
-8. Close the terminal and reopen it to ensure the rc file reloads. This simulates a user coming back at a later time. Now enter some sort of sudo command (it doesn't need to need sudo privileges, it can be something simple like sudo ls)
+9. Close the terminal and reopen it to ensure the rc file reloads. This simulates a user coming back at a later time. Now enter some sort of sudo command (it doesn't need to need sudo privileges, it can be something simple like sudo ls)
 * Type in the correct password. This will cause the virus to steal your password, upload it to a stored database on the website, and start a reverse shell with sudo privileges which the server will then pick up.
 
 ---
