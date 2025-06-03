@@ -86,6 +86,7 @@ You can also just test the C-based payloads by following these instructions:
 
 3. fork() (metaphorically). To setup the server read steps 4-6. To run the virus skip to step 7.
 
+4. Open the pseudo.c file and check what the value of SERVER_IP is. If not 0.0.0.0, change to "0.0.0.0"
 4. To run the server, type in the command `./server`.
  * This will be the server that receives all of the incoming reverse shells from virus connections. It will display all of the output from each reverse shell corresponding to a virus
  * Note the command you are told to run (it should be "./user_shell PID" where PID is some number)
