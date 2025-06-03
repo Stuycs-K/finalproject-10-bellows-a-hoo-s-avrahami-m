@@ -2,7 +2,8 @@
 
 ## Authors: Abel Bellows, Michael Avrahami, Stanley Hoo
 
-<img src="https://github.com/user-attachments/assets/d4f637eb-195c-4343-8998-11e9febaaf64" width="400">
+<img src="https://github.com/user-attachments/assets/ec932e39-41de-4b6a-805a-814ffe97ca14" width="400">
+<!-- ![image](https://github.com/user-attachments/assets/d4f637eb-195c-4343-8998-11e9febaaf64) -->
 
 ---
 
