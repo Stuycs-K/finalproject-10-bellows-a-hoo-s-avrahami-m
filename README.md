@@ -22,7 +22,7 @@ When opened, the executable:
   
 ## Instructions:
 
-Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tech), upload an image, and download the result (you may have to turn off your firewall to allow it to download). Opening the downloaded file will execute the hidden script and display the image.
+Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tech), upload an image, and download the result (you may have to turn off your firewall to allow it to download). Note the file may take several seconds to upload/download. Do not spam the buttons. Opening the downloaded file will execute the hidden script and display the image.
 
 > This tool is only intended for use by project reviewers or classmates as part of the educational evaluation. Do not distribute or run on unauthorized systems.
 
