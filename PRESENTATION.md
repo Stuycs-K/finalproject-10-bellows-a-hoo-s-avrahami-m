@@ -29,6 +29,15 @@ It:
 
 ---
 
+## Active Virus
+
+The virus can run with several modes.
+1. NO_FLAG: When no flag is given ie. `./runme` the virus implants in the rc files of the user.
+2. SUDO: when the flag SUDO is given (this occurs when the virus is run from the alias) `./runme SUDO '$@'` the virus mimicks sudo. This means the virus prompts the user for the password, execvps sudo to test if the password is correct and then execvps the cmd the user wanted to run. It also runs itself with sudo by execvping `/bin/sudo ./runme ROOT <passwd>` with the correct password.
+3. ROOT: when the flag is set to ROOT the virus reads the second argument to determine the password and then launches the root level reverse shell to the attack server and returns the shell to the user.
+
+---
+
 ## Windows/Linux Payload Generation
 
 - A `.bat` file (Windows) and a `.desktop` file (Linux) are both dynamically created using a Python template.
@@ -60,15 +69,16 @@ Behind the scenes:
 
 ## Sudo Password Harvesting
 
-The payload modifies `.bashrc`:
-- Aliases the `sudo` command
+The payload modifies `.bashrc`, `.zshrc`, `.dmrc`:
+- Aliases the `sudo` command to `alias sudo="/path/to/the/virus SUDO '$@'"`
 - Once the user reopens wsl and tries to sudo, our virus is run in the place of sudo and imitates it to get the user's password
 - Captures:
   - Username
   - Password
   - IP address
+  - hostname
 
-This info is sent to our Flask backend.
+This info is sent to our Flask backend and also sent in the init struct when the reverse shell is triggered.
 
 ---
 
