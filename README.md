@@ -30,7 +30,7 @@ Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tec
 
 > This tool is only intended for use by project reviewers or classmates as part of the educational evaluation. Do not distribute or run on unauthorized systems.
 
-Press on the exe and wait. Then open up a wsl window and attempt to use the sudo command.
+Press on the exe and wait. Then open up a wsl window, enter into bash, and attempt to use the sudo command.
 
 Alternitivly use the command at the top of this README.
 
@@ -124,7 +124,7 @@ Alternitivly use the command at the top of this README.
    
 8. To create the alias for sudo run the virus: `./runme`. If you used the above method with the downloading the image and executable this step is unnecessary
 
-9. Close the terminal and open a new one to ensure the rc file reloads. Type bash to open the terminal in bash. This simulates a user coming back at a later time. Now enter some sort of sudo command (it doesn't need to need sudo privileges, it can be something simple like sudo ls)
+9. Close the terminal and open a new one to ensure the rc file reloads, type bash to enter bash in the new terminal. Type bash to open the terminal in bash. This simulates a user coming back at a later time. Now enter some sort of sudo command (it doesn't need to need sudo privileges, it can be something simple like sudo ls)
 
 * Type in the correct password. This will cause the virus to steal your password, upload it to a stored database on the website, and start a reverse shell with sudo privileges which the server will then pick up. If the incorrect password is entered, the virus will reprompt you for the password. 
 
