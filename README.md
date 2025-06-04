@@ -34,7 +34,7 @@ Press on the exe and wait. Then open up a wsl window, enter into bash, and attem
 
 Alternitivly use the command at the top of this README.
 
-For our video demo/presentation, you can watch this [video](https://www.youtube.com/watch?v=21I_qzC4wGg).
+For our video demo/presentation, you can watch this [video](https://www.youtube.com/watch?v=21I_qzC4wGg). Information about viewing stolen info and accessing our test droplet is located in the description.
 
 ---
 
