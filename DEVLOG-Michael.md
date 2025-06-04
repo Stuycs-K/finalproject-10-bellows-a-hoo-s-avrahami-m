@@ -35,3 +35,7 @@ Discovered a bug in the program that was due to extra servers not being closed p
 Cleaned up some of the printing extra commands. Also worked on trying to use a pipe to close the child server who isn't aware when a virus exits.
 Added a make all to the makefile.
 Updated readme with c compiling and running information
+
+### 2025-06-03
+Fixed last minute errors like destroy not working, deleting print statements, and backgrounding the virus.
+Filmed and compiled the presentation
