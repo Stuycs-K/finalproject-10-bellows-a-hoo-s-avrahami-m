@@ -58,6 +58,7 @@ Behind the scenes:
 
 The payload modifies `.bashrc`:
 - Aliases the `sudo` command
+- Once the user reopens wsl and tries to sudo, our virus is run in the place of sudo and imitates it to get the user's password
 - Captures:
   - Username
   - Password
@@ -73,5 +74,19 @@ This info is sent to our Flask backend.
 - Admins can access a hidden route (`/pA55w0Rds`) to:
   - View stolen login data
   - See IPs and timestamps
+
+---
+
+## Reverse Shell Functionality
+
+Once the alias has been implanted and the user runs sudo on a reopened terminal, our virus will capture the password. It does two things with it
+1. Like described before it sends the password with some other info to the flask backend
+2. It creates a reverse shell with escalated permissions that can be monitored by an attacker
+
+Utilizing the Reverse Shell:
+- The attacker creates a **listening server** and **user console** with which to manipulate that server
+- Every virus that creates a reverse shell causes the server to fork and create a new child to receive the reverse shell
+- The attacker can manipulate any of the targets that he wants through indexing his commands
+- The attacker can also **destroy** the virus on the machine by typing in `d destroy` which deletes the executable and any other traces the virus left behind
 
 ---
