@@ -15,9 +15,11 @@
 
 ## Flowchart
 
+![viral-interactions.jpg](IMG_7127.jpg)
 ![Virus-Flowchart.jpg](Virus-Flowchart.jpg)
 
 ![Server-Flowchart.jpg](IMG_7125.jpg)
+
 
 ## Initiation
 
