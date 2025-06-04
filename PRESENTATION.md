@@ -15,7 +15,7 @@
 
 ## Flowchart
 
-![Cyber-Virus-Flowchart.jpg](Cyber-Virus-Flowchart.jpg)
+![Virus-Flowchart.jpg](Virus-Flowchart.jpg)
 
 ## Initiation
 
