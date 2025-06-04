@@ -15,11 +15,8 @@
 
 ## Flowchart
 
-![viral-interactions.jpg](IMG_7127.jpg)
-![Virus-Flowchart.jpg](Virus-Flowchart.jpg)
-
-![Server-Flowchart.jpg](IMG_7125.jpg)
-
+<img src="IMG_7127.jpg" alt="viral-interactions" width="400"><img src="IMG_7125.jpg" alt="Server Flowchart" width="400">
+<img src="Virus-Flowchart.jpg" alt="Virus Flowchart" width="400">
 
 ## Initiation
 
