@@ -13,6 +13,10 @@
 
 ---
 
+## Flowchart
+
+![Cyber-Virus-Flowchart.jpg](Cyber-Virus-Flowchart.jpg)
+
 ## Initiation
 
 Our Flask app acts as the **delivery platform** for the virus, posing as a **free** image background remover tool.
